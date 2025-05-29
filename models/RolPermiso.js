@@ -1,35 +1,42 @@
-// models/RolPermiso.js - Crear solo si tiene campos adicionales
+// models/RolPermiso.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   const RolPermiso = sequelize.define('RolPermiso', {
-    idRolPermiso: { // Opcional, si tienes PK en la tabla intermedia
+    id_rol_permiso: { // Coincide con tu DDL
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      field: 'idRolPermiso'
     },
-    idRol: {
+    id_rol: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'Rol', // Nombre del *modelo*
-        key: 'idRol'
+        key: 'id_rol',
       },
-      primaryKey: true // Si es parte de la clave primaria compuesta
     },
-    idPermiso: {
+    id_permiso: {
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: 'Permiso', // Nombre del *modelo*
-        key: 'idPermiso'
+        key: 'id_permiso',
       },
-      primaryKey: true // Si es parte de la clave primaria compuesta
     }
-    // Añadir otros campos si existen en tu tabla rol_permiso
+    // fecha_creacion y fecha_actualizacion son manejadas por Sequelize
   }, {
-    tableName: 'rol_permiso', // Nombre exacto de la tabla
-    timestamps: false
+    tableName: 'rol_permiso',
+    timestamps: true, // Tiene fecha_creacion y fecha_actualizacion
+    createdAt: 'fecha_creacion',
+    updatedAt: 'fecha_actualizacion',
+    // No tiene eliminación lógica propia, se elimina la relación directamente.
+    // paranoid: false, // Por lo tanto, no es paranoid
   });
+
+  // No necesita 'associate' si solo es una tabla de unión simple y las
+  // asociaciones ya están definidas en Rol y Permiso usando `through: models.RolPermiso`.
+  // Si tuviera relaciones propias, se definirían aquí.
 
   return RolPermiso;
 };

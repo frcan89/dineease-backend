@@ -5,6 +5,8 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const restauranteRoutes = require('./routes/restauranteRoutes');
+const rolRoutes = require('./routes/rolRoutes');
+const permisoRoutes = require('./routes/permisoRoutes');
 // Otras rutas
 
 const app = express();
@@ -16,6 +18,8 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', userRoutes);
 app.use('/api/restaurantes', restauranteRoutes); 
+app.use('/api/roles', rolRoutes);
+app.use('/api/permisos', permisoRoutes);
 
 // Otras rutas
 

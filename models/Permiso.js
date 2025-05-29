@@ -1,36 +1,55 @@
+// models/Permiso.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   const Permiso = sequelize.define('Permiso', {
-    idPermiso: {
+    id_permiso: { // Coincide con tu DDL
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      field: 'idPermiso'
     },
     nombre: {
       type: DataTypes.STRING(255),
       allowNull: false,
-      unique: true // El nombre del permiso suele ser único
+      unique: true,
     },
     descripcion: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    eliminado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    fecha_eliminacion: {
+      type: DataTypes.DATE,
+      allowNull: true,
     }
   }, {
     tableName: 'permiso',
-    timestamps: false,
+    timestamps: true,
+    createdAt: 'fecha_creacion',
+    updatedAt: 'fecha_actualizacion',
+    paranoid: true,
+    deletedAt: 'fecha_eliminacion',
   });
 
   Permiso.associate = (models) => {
-    // Un Permiso pertenece a muchos Roles a través de RolPermiso
     Permiso.belongsToMany(models.Rol, {
-      through: 'RolPermiso', // Nombre exacto de la tabla intermedia
-      foreignKey: 'idPermiso',
-      otherKey: 'idRol',
-      timestamps: false
+      through: models.RolPermiso, // Usar el modelo RolPermiso
+      foreignKey: 'id_permiso',
+      otherKey: 'id_rol',
     });
   };
+
+  // Hook para actualizar el campo 'eliminado'
+  Permiso.addHook('afterDestroy', async (instance, options) => {
+    await instance.update({ eliminado: true }, { hooks: false, transaction: options.transaction });
+  });
+  Permiso.addHook('afterRestore', async (instance, options) => {
+    await instance.update({ eliminado: false }, { hooks: false, transaction: options.transaction });
+  });
 
   return Permiso;
 };
