@@ -1,0 +1,46 @@
+type: object
+properties:
+  id_receta: # DDL `id receta`
+    type: integer
+    readOnly: true
+  nombre:
+    type: string
+  descripcion:
+    type: string
+    nullable: true
+  tiempo_preparacion: # En minutos
+    type: integer
+    nullable: true
+  instrucciones:
+    type: string
+    nullable: true
+  porciones:
+    type: integer
+    default: 1
+  precio_costo: # Costo de preparación
+    type: number
+    format: float
+    nullable: true
+  id_restaurante:
+    type: integer
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  # ... fecha_actualizacion, eliminado, fecha_eliminacion ...
+  Ingredientes: # Lista de ingredientes de la receta
+    type: array
+    readOnly: true
+    items:
+      type: object
+      properties:
+        id_producto:
+          type: integer
+        nombre_producto: # Útil para mostrar
+          type: string
+        cantidad:
+          type: number # Decimal en DDL
+          format: float
+        unidad_medida_receta:
+          type: string
+          nullable: true

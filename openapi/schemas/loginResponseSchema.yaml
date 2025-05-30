@@ -1,0 +1,13 @@
+type: object
+properties:
+  message:
+    type: string
+    example: Inicio de sesión exitoso.
+  data:
+    type: object
+    properties:
+      token:
+        type: string
+        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+      usuario:
+        $ref: '#/components/schemas/Usuario' # El schema Usuario completo (sin password_hash)

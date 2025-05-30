@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController'); // Ajusta la ruta
-// const authMiddleware = require('../middlewares/authMiddleware'); // Descomentar cuando lo creemos
+//const authMiddleware = require('../middlewares/authMiddleware'); // Descomentar cuando lo creemos
 
 /**
  * @swagger
@@ -160,6 +160,6 @@ router.post('/login', authController.handleLogin);
  *         description: No autorizado (token inválido o expirado)
  *       500:
  *         description: Error interno del servidor
- **/
-// router.get('/verify-token', authMiddleware.verificarToken, authController.handleVerificarToken); // Ruta protegida
+ */
+router.get('/verify-token', /*authMiddleware.verificarToken, */authController.handleVerificarToken); // Ruta protegida
 module.exports = router;

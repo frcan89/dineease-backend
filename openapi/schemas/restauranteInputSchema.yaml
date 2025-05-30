@@ -1,0 +1,23 @@
+type: object
+required:
+  - nombre
+properties:
+  nombre:
+    type: string
+    maxLength: 255
+    example: Parrilla de Autor
+  logo:
+    type: string
+    nullable: true
+    format: url
+  colores_primarios:
+    type: string
+    nullable: true
+  direccion:
+    type: string
+    nullable: true
+    maxLength: 255
+  telefono:
+    type: string
+    nullable: true
+    maxLength: 20

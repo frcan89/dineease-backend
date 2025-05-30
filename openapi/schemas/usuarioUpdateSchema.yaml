@@ -1,0 +1,33 @@
+type: object
+properties: # Todos los campos son opcionales en un PUT parcial
+  nombre:
+    type: string
+    maxLength: 255
+    nullable: true
+  email: # Si se permite cambiar el email
+    type: string
+    format: email
+    maxLength: 255
+    nullable: true
+  id_rol:
+    type: integer
+    nullable: true
+  id_restaurante:
+    type: integer
+    nullable: true
+  estado:
+    type: boolean
+    nullable: true
+  # Campos para el perfil (opcionales)
+  direccion:
+    type: string
+    nullable: true
+  telefono:
+    type: string
+    nullable: true
+  documento_identidad:
+    type: string
+    nullable: true
+  notas:
+    type: string
+    nullable: true

@@ -1,0 +1,40 @@
+type: object
+properties:
+  id_perfil_usuario:
+    type: integer
+    readOnly: true
+    example: 1
+  # id_usuario no se suele devolver aquí si ya está en el objeto Usuario padre
+  direccion:
+    type: string
+    nullable: true
+    example: Av. Corrientes 500
+  telefono:
+    type: string
+    nullable: true
+    example: "11-5555-4444"
+  documento_identidad:
+    type: string
+    nullable: true
+    example: "12345678A"
+  notas:
+    type: string
+    nullable: true
+    example: Cliente VIP
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true

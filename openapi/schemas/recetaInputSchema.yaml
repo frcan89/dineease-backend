@@ -1,0 +1,46 @@
+type: object
+required:
+  - nombre
+  - id_restaurante
+properties:
+  nombre:
+    type: string
+  descripcion:
+    type: string
+    nullable: true
+  tiempo_preparacion:
+    type: integer
+    nullable: true
+    minimum: 0
+  instrucciones:
+    type: string
+    nullable: true
+  porciones:
+    type: integer
+    nullable: true
+    minimum: 1
+  precio_costo:
+    type: number
+    format: float
+    nullable: true
+    minimum: 0
+  id_restaurante:
+    type: integer
+  ingredientes: # Para crear/actualizar ingredientes de la receta
+    type: array
+    description: Lista de ingredientes para la receta. Al actualizar, esto reemplazará los ingredientes existentes.
+    items:
+      type: object
+      required:
+        - id_producto
+        - cantidad
+      properties:
+        id_producto:
+          type: integer
+        cantidad:
+          type: number # Decimal en DDL
+          format: float
+          minimum: 0.01
+        unidad_medida_receta: # Opcional, si difiere del producto base
+          type: string
+          nullable: true

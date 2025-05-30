@@ -1,0 +1,34 @@
+type: object
+properties:
+  id_factura:
+    type: integer
+    readOnly: true
+  id_pago:
+    type: integer
+  numero_factura: # DDL `numero_factura`
+    type: string # En DDL es varchar(50)
+    example: "F001-0001234"
+  fecha_emision:
+    type: string
+    format: date-time
+  impuestos:
+    type: number
+    format: float
+    default: 0.00
+  total_factura:
+    type: number
+    format: float
+  datos_cliente_factura:
+    type: string # En DDL es TEXT
+    nullable: true
+    example: "Cliente: Juan Perez, DNI: 12345678, Dirección: Calle Sol 42"
+  # ... fecha_creacion, etc. de la tabla factura ...
+  Pago: # Opcional, info del pago asociado
+    type: object
+    nullable: true
+    properties:
+      monto:
+        type: number
+        format: float
+      metodo_pago:
+        type: string

@@ -1,0 +1,12 @@
+type: object
+properties:
+  message:
+    type: string
+    example: Usuario registrado exitosamente.
+  data:
+    type: object
+    properties:
+      token:
+        type: string
+      usuario:
+        $ref: '#/components/schemas/Usuario'

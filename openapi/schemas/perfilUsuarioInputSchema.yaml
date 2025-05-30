@@ -1,0 +1,14 @@
+type: object
+properties:
+  direccion:
+    type: string
+    nullable: true
+  telefono:
+    type: string
+    nullable: true
+  documento_identidad:
+    type: string
+    nullable: true
+  notas:
+    type: string
+    nullable: true

@@ -1,0 +1,29 @@
+type: object
+properties:
+  id_item_menu:
+    type: integer
+    readOnly: true
+  id_menu:
+    type: integer
+  id_receta:
+    type: integer
+  precio_item: # Precio individual del item
+    type: number
+    format: float
+  disponible: # 1: Disponible, 0: No disponible
+    type: boolean
+    example: true
+  # ... fecha_creacion, etc. ...
+  Receta: # Info de la receta asociada
+    type: object
+    readOnly: true
+    properties:
+      nombre:
+        type: string
+      descripcion:
+        type: string
+        nullable: true
+  # Menu: # Info del menú al que pertenece (opcional aquí)
+  #   type: object
+  #   properties:
+  #     nombre: string

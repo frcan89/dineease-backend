@@ -1,0 +1,20 @@
+type: object
+required:
+  - numero
+  - id_restaurante
+properties:
+  numero:
+    type: integer # O string
+  capacidad:
+    type: integer
+    default: 2
+    minimum: 1
+  estado:
+    type: string
+    enum: [Libre, Ocupada, Reservada, 'Fuera de Servicio']
+    default: Libre
+  ubicacion:
+    type: string
+    nullable: true
+  id_restaurante:
+    type: integer

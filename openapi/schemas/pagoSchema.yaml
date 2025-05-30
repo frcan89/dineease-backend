@@ -1,0 +1,31 @@
+type: object
+properties:
+  id_pago:
+    type: integer
+    readOnly: true
+  id_pedido:
+    type: integer
+  monto:
+    type: number
+    format: float
+  cambio:
+    type: number
+    format: float
+    default: 0.00
+  metodo_pago:
+    type: string
+    example: Efectivo # Ej: Efectivo, Tarjeta Credito, Transferencia
+  estado:
+    type: string
+    example: Completado # Ej: Pendiente, Completado, Fallido, Reembolsado
+  fecha_pago:
+    type: string
+    format: date-time
+  # ... fecha_creacion, etc. de la tabla pago ...
+  Pedido: # Opcional, info del pedido asociado
+    type: object
+    nullable: true
+    properties:
+      subtotal:
+        type: number
+        format: float

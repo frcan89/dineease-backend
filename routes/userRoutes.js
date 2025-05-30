@@ -1,67 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController'); // Ajusta la ruta
-const authMiddleware = require('../middlewares/authMiddleware'); // Asumiendo que lo crearemos
-// const authorizationMiddleware = require('../middlewares/authorizationMiddleware'); // Para autorización por roles/permisos
+const userController = require('../controllers/userController');
+const authMiddleware = require('../middlewares/authMiddleware');
+// const authorizationMiddleware = require('../middlewares/authorizationMiddleware');
 
 /**
  * @swagger
  * tags:
  *   name: Usuarios
- *   description: Endpoints para la gestión de usuarios (requiere autenticación y en algunos casos, autorización específica)
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- *   schemas:
- *     Usuario: # Definición básica para Swagger, puedes expandirla
- *       type: object
- *       properties:
- *         idUsuario:
- *           type: integer
- *           example: 1
- *         nombre:
- *           type: string
- *           example: "Admin User"
- *         email:
- *           type: string
- *           format: email
- *           example: "admin@example.com"
- *         estado:
- *           type: boolean
- *           example: true
- *         idRol:
- *           type: integer
- *           example: 1
- *         Rol:
- *           type: object
- *           properties:
- *             idRol:
- *               type: integer
- *             nombre:
- *               type: string
- *         idRestaurante:
- *           type: integer
- *         Restaurante:
- *           type: object
- *           properties:
- *             idRestaurante:
- *               type: integer
- *             nombre:
- *               type: string
- *         createdAt:
- *           type: string
- *           format: date-time
- *         updatedAt:
- *           type: string
- *           format: date-time
+ *   description: Endpoints para la gestión de usuarios
  */
 
 // Aplicar middleware de autenticación a todas las rutas de usuarios
-// O puedes aplicarlo individualmente si algunas rutas son públicas
-router.use(authMiddleware.verificarToken); // ¡Importante! Esto protege todas las rutas de abajo
+router.use(authMiddleware.verificarToken);
 
 /**
  * @swagger
@@ -76,17 +27,25 @@ router.use(authMiddleware.verificarToken); // ¡Importante! Esto protege todas l
  *         description: Perfil obtenido exitosamente
  *         content:
  *           application/json:
- *             schema:
+ *             schema: # Schema de respuesta para el perfil
  *               type: object
  *               properties:
  *                 message:
  *                   type: string
  *                 data:
- *                   $ref: '#/components/schemas/Usuario'
+ *                   $ref: '#/components/schemas/Usuario' # El schema Usuario ya incluye el perfil
  *       401:
  *         description: No autorizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       404:
  *         description: Perfil no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get('/perfil', userController.handleObtenerPerfil);
 
@@ -94,7 +53,7 @@ router.get('/perfil', userController.handleObtenerPerfil);
  * @swagger
  * /api/usuarios:
  *   post:
- *     summary: Crea un nuevo usuario (protegido, requiere rol admin por ejemplo)
+ *     summary: Crea un nuevo usuario (generalmente por un administrador)
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -103,25 +62,44 @@ router.get('/perfil', userController.handleObtenerPerfil);
  *       content:
  *         application/json:
  *           schema:
- *             # Misma schema que en /api/auth/register pero sin el token en la respuesta
- *             $ref: '#/components/schemas/UsuarioInput' # Crear este schema si es diferente
+ *             $ref: '#/components/schemas/UsuarioInput'
  *     responses:
  *       201:
  *         description: Usuario creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  message:
+ *                      type: string
+ *                  data:
+ *                      $ref: '#/components/schemas/Usuario'
  *       400:
  *         description: Datos inválidos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
  *         description: No autorizado
  *       403:
  *         description: Prohibido (sin permisos suficientes)
+ *       409:
+ *         description: Conflicto (ej. email ya existe)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.post('/', /* authorizationMiddleware.permitir(['admin']), */ userController.handleCrearUsuario); // Ejemplo de autorización
+// router.post('/', authorizationMiddleware.permitir(['admin']), userController.handleCrearUsuario);
+router.post('/', userController.handleCrearUsuario);
 
 /**
  * @swagger
  * /api/usuarios:
  *   get:
- *     summary: Obtiene una lista de todos los usuarios (protegido)
+ *     summary: Obtiene una lista de todos los usuarios
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -131,41 +109,66 @@ router.post('/', /* authorizationMiddleware.permitir(['admin']), */ userControll
  *         schema:
  *           type: integer
  *           default: 10
- *         description: Número de usuarios por página
  *       - in: query
  *         name: pagina
  *         schema:
  *           type: integer
  *           default: 1
- *         description: Número de página
  *       - in: query
- *         name: idRestaurante
+ *         name: nombre
+ *         schema:
+ *           type: string
+ *         description: Filtrar por nombre de usuario
+ *       - in: query
+ *         name: idRestaurante # DDL usa id_restaurante, asegúrate de que el servicio lo mapee si es necesario
  *         schema:
  *           type: integer
  *         description: Filtrar por ID de restaurante
  *       - in: query
- *         name: idRol
+ *         name: idRol # DDL usa id_rol
  *         schema:
  *           type: integer
  *         description: Filtrar por ID de rol
  *       - in: query
  *         name: estado
  *         schema:
+ *           type: boolean # true o false
+ *         description: Filtrar por estado del usuario (activo/inactivo)
+ *       - in: query
+ *         name: incluirEliminados
+ *         schema:
  *           type: boolean
- *         description: Filtrar por estado (true/false)
+ *           default: false
+ *         description: Incluir usuarios eliminados lógicamente
  *     responses:
  *       200:
  *         description: Lista de usuarios obtenida
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalUsuarios:
+ *                   type: integer
+ *                 usuarios:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Usuario'
+ *                 paginaActual:
+ *                   type: integer
+ *                 totalPaginas:
+ *                   type: integer
  *       401:
  *         description: No autorizado
  */
-router.get('/', /* authorizationMiddleware.permitir(['admin', 'gerente']), */ userController.handleObtenerTodosLosUsuarios);
+// router.get('/', authorizationMiddleware.permitir(['admin', 'gerente']), userController.handleObtenerTodosLosUsuarios);
+router.get('/', userController.handleObtenerTodosLosUsuarios);
 
 /**
  * @swagger
  * /api/usuarios/{id}:
  *   get:
- *     summary: Obtiene un usuario por su ID (protegido)
+ *     summary: Obtiene un usuario por su ID
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -176,13 +179,32 @@ router.get('/', /* authorizationMiddleware.permitir(['admin', 'gerente']), */ us
  *         schema:
  *           type: integer
  *         description: ID del usuario
+ *       - in: query
+ *         name: incluirEliminados
+ *         schema:
+ *           type: boolean
+ *           default: false
+ *         description: Incluir si el usuario está eliminado lógicamente
  *     responses:
  *       200:
  *         description: Usuario obtenido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  message:
+ *                      type: string
+ *                  data:
+ *                      $ref: '#/components/schemas/Usuario'
  *       401:
  *         description: No autorizado
  *       404:
  *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get('/:id', userController.handleObtenerUsuarioPorId);
 
@@ -190,7 +212,7 @@ router.get('/:id', userController.handleObtenerUsuarioPorId);
  * @swagger
  * /api/usuarios/{id}:
  *   put:
- *     summary: Actualiza un usuario por su ID (protegido)
+ *     summary: Actualiza un usuario por su ID
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -206,32 +228,29 @@ router.get('/:id', userController.handleObtenerUsuarioPorId);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *               email:
- *                 type: string
- *                 format: email
- *               idRol:
- *                 type: integer
- *               estado:
- *                 type: boolean
- *               dataAdicional:
- *                 type: object
+ *             $ref: '#/components/schemas/UsuarioUpdate' # Usar un schema específico para actualización
  *     responses:
  *       200:
  *         description: Usuario actualizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  message:
+ *                      type: string
+ *                  data:
+ *                      $ref: '#/components/schemas/Usuario'
  *       400:
- *         description: Datos inválidos o ID de usuario inválido
+ *         description: Datos inválidos
  *       401:
  *         description: No autorizado
  *       403:
- *         description: Prohibido (intentando actualizar un usuario sin permiso)
+ *         description: Prohibido
  *       404:
  *         description: Usuario no encontrado
  *       409:
- *         description: Conflicto (ej. email ya en uso por otro usuario)
+ *         description: Conflicto (ej. email ya en uso)
  */
 router.put('/:id', userController.handleActualizarUsuario);
 
@@ -239,7 +258,7 @@ router.put('/:id', userController.handleActualizarUsuario);
  * @swagger
  * /api/usuarios/{id}/cambiar-password:
  *   put:
- *     summary: Cambia la contraseña del usuario autenticado (o de otro si es admin)
+ *     summary: Cambia la contraseña del usuario
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -255,35 +274,33 @@ router.put('/:id', userController.handleActualizarUsuario);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - passwordActual
- *               - nuevaPassword
- *             properties:
- *               passwordActual:
- *                 type: string
- *                 format: password
- *               nuevaPassword:
- *                 type: string
- *                 format: password
+ *             $ref: '#/components/schemas/ChangePasswordRequest'
  *     responses:
  *       200:
  *         description: Contraseña actualizada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *       400:
- *         description: Faltan contraseñas o ID inválido
+ *         description: Datos inválidos
  *       401:
  *         description: No autorizado o contraseña actual incorrecta
  *       403:
- *         description: Prohibido cambiar contraseña de otro usuario (si no es admin)
+ *         description: Prohibido
+ *       404:
+ *         description: Usuario no encontrado
  */
 router.put('/:id/cambiar-password', userController.handleChangePassword);
-
 
 /**
  * @swagger
  * /api/usuarios/{id}:
  *   delete:
- *     summary: Elimina (o desactiva) un usuario por su ID (protegido, requiere rol admin)
+ *     summary: Elimina (lógicamente) un usuario por su ID
  *     tags: [Usuarios]
  *     security:
  *       - bearerAuth: []
@@ -296,7 +313,53 @@ router.put('/:id/cambiar-password', userController.handleChangePassword);
  *         description: ID del usuario a eliminar
  *     responses:
  *       200:
- *         description: Usuario eliminado/desactivado
+ *         description: Usuario eliminado (lógicamente) exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: No autorizado
+ *       403:
+ *         description: Prohibido
+ *       404:
+ *         description: Usuario no encontrado o ya eliminado
+ */
+// router.delete('/:id', authorizationMiddleware.permitir(['admin']), userController.handleEliminarUsuario);
+router.delete('/:id', userController.handleEliminarUsuario);
+
+/**
+ * @swagger
+ * /api/usuarios/{id}/restaurar:
+ *   put:
+ *     summary: Restaura un usuario eliminado lógicamente
+ *     tags: [Usuarios]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del usuario a restaurar
+ *     responses:
+ *       200:
+ *         description: Usuario restaurado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Usuario'
+ *       400:
+ *         description: El usuario no está eliminado o ID inválido
  *       401:
  *         description: No autorizado
  *       403:
@@ -304,6 +367,7 @@ router.put('/:id/cambiar-password', userController.handleChangePassword);
  *       404:
  *         description: Usuario no encontrado
  */
-router.delete('/:id', /* authorizationMiddleware.permitir(['admin']), */ userController.handleEliminarUsuario);
+// router.put('/:id/restaurar', authorizationMiddleware.permitir(['admin']), userController.handleRestaurarUsuario);
+router.put('/:id/restaurar', userController.handleRestaurarUsuario);
 
 module.exports = router;

@@ -1,0 +1,43 @@
+type: object
+properties:
+  idRestaurante: # Nota: el DDL usa `id restaurante` (con espacio), pero el modelo Sequelize probablemente usa `idRestaurante`
+    type: integer
+    example: 1
+    readOnly: true
+  nombre:
+    type: string
+    example: El Buen Sabor
+  logo:
+    type: string
+    nullable: true
+    format: url # O simple string
+    example: http://example.com/logo.png
+  colores_primarios:
+    type: string # O array si es JSON en BD
+    nullable: true
+    example: "#FF5733,#33FFAA"
+  direccion:
+    type: string
+    nullable: true
+    example: Calle Falsa 123, Ciudad
+  telefono:
+    type: string
+    nullable: true
+    example: "+573001234567"
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true

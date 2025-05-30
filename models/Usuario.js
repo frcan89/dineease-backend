@@ -1,13 +1,13 @@
+// models/Usuario.js
 const { DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt'); // Necesitarás instalar bcrypt: npm install bcrypt
+const bcrypt = require('bcrypt');
 
 module.exports = (sequelize) => {
   const Usuario = sequelize.define('Usuario', {
-    idUsuario: {
+    id_usuario: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      field: 'idUsuario'
     },
     nombre: {
       type: DataTypes.STRING(255),
@@ -18,73 +18,84 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
       validate: {
-        isEmail: true, // Validación básica de email
+        isEmail: true,
       }
     },
-    contraseña: { // Nombre del campo en el modelo
-      type: DataTypes.STRING(255), // BCrypt genera hashes largos
+    password_hash: { // Coincide con DDL
+      type: DataTypes.STRING(255),
       allowNull: false,
-      field: 'contraseña' // Nombre exacto de la columna en BD
     },
-    estado: {
-      type: DataTypes.BOOLEAN, // O ENUM si usaste eso en la BD
+    id_rol: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: true, // Por defecto, activo
+      references: { model: 'Rol', key: 'id_rol' }, // Asumiendo que 'Rol' es el nombre del modelo
+    },
+    estado: { // Este campo ya lo usas para activo/inactivo
+      type: DataTypes.BOOLEAN, // tinyint(1)
+      allowNull: false,
+      defaultValue: true, // 1 es true
     },
     ultimo_acceso: {
       type: DataTypes.DATE,
       allowNull: true,
-      field: 'ultimo_acceso'
     },
-    idRol: {
+    id_restaurante: {
       type: DataTypes.INTEGER,
-      allowNull: false, // Asumiendo que todo usuario DEBE tener un rol
-      references: {
-        model: 'Rol', // Nombre del *modelo* Rol
-        key: 'idRol'
-      },
-      field: 'idRol'
+      allowNull: true, // Como en tu DDL
+      references: { model: 'Restaurante', key: 'idRestaurante' }, // Ajusta key si es id_restaurante
     },
-    idRestaurante: {
-      type: DataTypes.INTEGER,
-      allowNull: false, // Asumiendo que todo usuario pertenece a un restaurante
-      references: {
-        model: 'Restaurante', // Nombre del *modelo* Restaurante
-        key: 'idRestaurante'
-      },
-      field: 'idRestaurante'
+    eliminado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    fecha_eliminacion: {
+      type: DataTypes.DATE,
+      allowNull: true,
     }
+    // fecha_creacion, fecha_actualizacion manejadas por Sequelize
   }, {
     tableName: 'usuario',
-    timestamps: true, // Asumiendo createdAt/updatedAt
+    timestamps: true,
+    createdAt: 'fecha_creacion',
+    updatedAt: 'fecha_actualizacion',
+    paranoid: true, // Habilita eliminación lógica
+    deletedAt: 'fecha_eliminacion', // Columna para paranoid
+
     hooks: {
-      // Hook para hashear la contraseña ANTES de crear o actualizar el usuario
       beforeSave: async (usuario, options) => {
-        if (usuario.changed('contraseña')) { // Solo hashear si la contraseña cambió
-          const salt = await bcrypt.genSalt(10); // 10 rondas es un buen balance
-          usuario.contraseña = await bcrypt.hash(usuario.contraseña, salt);
+        if (usuario.changed('password_hash')) { // Si se intenta guardar 'password_hash'
+          const salt = await bcrypt.genSalt(10);
+          usuario.password_hash = await bcrypt.hash(usuario.password_hash, salt);
         }
       }
-      // Podrías usar beforeCreate y beforeUpdate por separado también
     }
   });
 
-  // Método de instancia para validar la contraseña
   Usuario.prototype.validarPassword = async function(password) {
-    return await bcrypt.compare(password, this.contraseña);
+    return await bcrypt.compare(password, this.password_hash);
   };
 
   Usuario.associate = (models) => {
-    // Un Usuario pertenece a un Rol y a un Restaurante
-    Usuario.belongsTo(models.Rol, { foreignKey: 'idRol' });
-    Usuario.belongsTo(models.Restaurante, { foreignKey: 'idRestaurante' });
-    // Un Usuario tiene un DataUsuario
-    Usuario.hasOne(models.DataUsuario, { foreignKey: 'idUsuario' });
-    // Un Usuario puede crear muchos Pedidos
-    Usuario.hasMany(models.Pedido, { foreignKey: 'idUsuario' }); // Asumiendo que idUsuario en Pedido es el creador
-    // Un Usuario puede ser responsable de muchos Movimientos de Inventario
-    Usuario.hasMany(models.MovimientoInventario, { foreignKey: 'idUsuario' }); // Asumiendo idUsuario aquí es el responsable
+    Usuario.belongsTo(models.Rol, { foreignKey: 'id_rol' });
+    Usuario.belongsTo(models.Restaurante, { foreignKey: 'id_restaurante' }); // Ajusta foreignKey si es id_restaurante
+    Usuario.hasOne(models.PerfilUsuario, { foreignKey: 'id_usuario', as: 'perfil' }); // Asumiendo modelo PerfilUsuario
+    Usuario.hasMany(models.Pedido, { foreignKey: 'id_usuario_empleado', as: 'pedidosCreados' }); // Ejemplo
+    // ... otras asociaciones ...
   };
+
+  // Hooks para sincronizar 'eliminado' con 'fecha_eliminacion' (paranoid)
+  Usuario.addHook('afterDestroy', async (instance, options) => {
+    // Cuando paranoid:true destruye, setea deletedAt (fecha_eliminacion)
+    // Aquí actualizamos el campo 'eliminado' booleano
+    await instance.update({ eliminado: true }, { hooks: false, transaction: options.transaction });
+  });
+
+  Usuario.addHook('afterRestore', async (instance, options) => {
+    // Cuando se restaura, deletedAt (fecha_eliminacion) se pone a null
+    // Aquí actualizamos el campo 'eliminado' booleano
+    await instance.update({ eliminado: false }, { hooks: false, transaction: options.transaction });
+  });
 
   return Usuario;
 };

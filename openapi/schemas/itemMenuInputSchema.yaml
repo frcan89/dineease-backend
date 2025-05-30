@@ -1,0 +1,17 @@
+type: object
+required:
+  - id_menu
+  - id_receta
+  - precio_item
+properties:
+  id_menu:
+    type: integer
+  id_receta:
+    type: integer
+  precio_item:
+    type: number
+    format: float
+    minimum: 0
+  disponible:
+    type: boolean
+    default: true
