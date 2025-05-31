@@ -1,0 +1,28 @@
+type: object
+properties:
+  id_menu:
+    type: integer
+    readOnly: true
+  nombre:
+    type: string
+  descripcion:
+    type: string
+    nullable: true
+  costo_total: # Del menú completo, si aplica
+    type: number
+    format: float
+    nullable: true
+  precio_venta: # Precio del menú completo
+    type: number
+    format: float
+  estado:
+    type: string
+    example: Activo
+  id_restaurante:
+    type: integer
+  # ... fecha_creacion, etc. ...
+  ItemsMenu: # Lista de items del menú
+    type: array
+    readOnly: true
+    items:
+      $ref: '#/components/schemas/ItemMenu'

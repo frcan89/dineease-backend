@@ -1,0 +1,27 @@
+type: object
+required:
+  - nombre
+  - unidad_medida
+  - id_restaurante # Asumiendo que siempre se asocia a un restaurante al crear
+properties:
+  nombre:
+    type: string
+    maxLength: 255
+  descripcion:
+    type: string
+    nullable: true
+  unidad_medida:
+    type: string
+    maxLength: 50
+  precio_compra:
+    type: number
+    format: float
+    nullable: true
+    minimum: 0
+  stock_minimo:
+    type: integer
+    nullable: true
+    minimum: 0
+  id_restaurante:
+    type: integer
+  # id_usuario_registro se asignaría en el backend

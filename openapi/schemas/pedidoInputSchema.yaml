@@ -1,0 +1,40 @@
+type: object
+required:
+  - id_usuario_empleado # Quien toma el pedido
+  - id_restaurante
+  # id_mesa es opcional si es para llevar
+properties:
+  id_mesa:
+    type: integer
+    nullable: true
+  id_usuario_empleado:
+    type: integer
+  id_cliente: # Opcional
+    type: integer
+    nullable: true
+  estado: # Opcional al crear, default 'Pendiente' o 'Abierto'
+    type: string
+    example: Pendiente
+  id_restaurante:
+    type: integer
+  items: # Para crear el pedido con sus items de una vez
+    type: array
+    description: Lista de items para el pedido.
+    minItems: 1 # Un pedido debe tener al menos un item
+    items:
+      type: object
+      required:
+        - id_item_menu
+        - cantidad
+      properties:
+        id_item_menu:
+          type: integer
+        cantidad:
+          type: integer
+          minimum: 1
+        precio_unitario_momento: # Opcional, el backend podría tomarlo del item_menu
+          type: number
+          format: float
+        notas_item:
+          type: string
+          nullable: true

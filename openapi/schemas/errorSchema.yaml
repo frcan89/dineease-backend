@@ -1,0 +1,21 @@
+type: object
+properties:
+  error:
+    type: object
+    properties:
+      message:
+        type: string
+        example: Mensaje de error detallado.
+      # Opcional: podrías añadir un campo 'code' o 'details'
+      # code:
+      #   type: string
+      #   example: VALIDATION_ERROR
+      # details:
+      #   type: array
+      #   items:
+      #     type: object
+      #     properties:
+      #       field:
+      #         type: string
+      #       message:
+      #         type: string

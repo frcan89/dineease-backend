@@ -1,0 +1,35 @@
+type: object
+properties:
+  id_item_pedido:
+    type: integer
+    readOnly: true
+  id_pedido:
+    type: integer
+  id_item_menu:
+    type: integer
+  cantidad:
+    type: integer
+  precio_unitario_momento: # Precio al momento de la orden
+    type: number
+    format: float
+  notas_item:
+    type: string
+    nullable: true
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  # ... fecha_actualizacion, eliminado, fecha_eliminacion de la tabla item_pedido ...
+  ItemMenu: # Info del ItemMenu asociado
+    type: object
+    readOnly: true
+    properties:
+      # id_item_menu ya está arriba
+      precio_item: # Precio actual del item_menu (puede ser diferente al precio_unitario_momento)
+        type: number
+        format: float
+      Receta:
+        type: object
+        properties:
+          nombre:
+            type: string

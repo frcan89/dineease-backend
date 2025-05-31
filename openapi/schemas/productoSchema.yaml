@@ -1,0 +1,53 @@
+type: object
+properties:
+  id_producto:
+    type: integer
+    readOnly: true
+    example: 101
+  nombre:
+    type: string
+    example: Tomate Fresco
+  descripcion:
+    type: string
+    nullable: true
+    example: Tomates rojos maduros para ensalada.
+  unidad_medida:
+    type: string
+    example: "Kg" # O "Unidad", "Litro"
+  precio_compra:
+    type: number # Decimal en BD
+    format: float # O double
+    nullable: true
+    example: 1.50
+  stock_minimo:
+    type: integer
+    nullable: true # Según DDL era DEFAULT 0, pero puede ser null si no se especifica
+    example: 5
+  id_usuario_registro: # Usuario que lo registró/modificó
+    type: integer
+    nullable: true
+    readOnly: true
+  id_restaurante:
+    type: integer
+    readOnly: true
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true
+  # Opcional: Incluir el inventario actual
+  # Inventario:
+  #   $ref: '#/components/schemas/Inventario'
+  #   nullable: true

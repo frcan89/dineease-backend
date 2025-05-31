@@ -1,0 +1,66 @@
+type: object
+properties:
+  id_usuario:
+    type: integer
+    readOnly: true
+    example: 1
+  nombre:
+    type: string
+    example: Ana López
+  email:
+    type: string
+    format: email
+    example: ana.lopez@example.com
+  estado: # 1: Activo, 0: Inactivo
+    type: boolean # Mapeado desde tinyint(1)
+    example: true
+  ultimo_acceso:
+    type: string
+    format: date-time
+    nullable: true
+  id_rol:
+    type: integer
+    example: 2
+  id_restaurante:
+    type: integer
+    nullable: true
+    example: 1
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true
+  Rol: # Objeto Rol embebido
+    type: object
+    nullable: true
+    readOnly: true
+    properties:
+      id_rol:
+        type: integer
+      nombre:
+        type: string
+  Restaurante: # Objeto Restaurante embebido
+    type: object
+    nullable: true
+    readOnly: true
+    properties:
+      idRestaurante: # o id_restaurante
+        type: integer
+      nombre:
+        type: string
+  perfil: # Objeto PerfilUsuario embebido
+    $ref: '#/components/schemas/PerfilUsuario' # Referencia a otro schema
+    nullable: true
+    readOnly: true

@@ -1,0 +1,21 @@
+type: object
+required:
+  - id_pago
+  - numero_factura # Podría ser generado por el sistema
+  - total_factura
+properties:
+  id_pago:
+    type: integer
+  numero_factura:
+    type: string
+    # Podría ser readOnly si el sistema lo genera
+  impuestos:
+    type: number
+    format: float
+    default: 0.00
+  total_factura:
+    type: number
+    format: float
+  datos_cliente_factura:
+    type: string
+    nullable: true

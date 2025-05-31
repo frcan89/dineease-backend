@@ -1,0 +1,41 @@
+type: object
+properties:
+  id_rol:
+    type: integer
+    example: 1
+    readOnly: true # El cliente no debería enviar esto al crear/actualizar
+  nombre:
+    type: string
+    example: Administrador
+  descripcion:
+    type: string
+    nullable: true
+    example: Acceso total al sistema
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true
+  Permisos: # Si se incluyen al obtener un rol
+    type: array
+    nullable: true
+    readOnly: true
+    items:
+      type: object # Un schema simplificado de Permiso
+      properties:
+        id_permiso:
+          type: integer
+        nombre:
+          type: string

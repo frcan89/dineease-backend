@@ -187,6 +187,44 @@ const userController = {
       next(error);
     }
   },
+    async handleChangePassword(req, res, next) {
+    try {
+        const userId = parseInt(req.params.id, 10);
+        // Asegurar que el usuario autenticado es quien modifica su contraseña o es un admin
+        if (req.user.id !== userId /* && !esAdmin(req.user.id_rol) */) {
+            const error = new Error('No autorizado.'); error.status = 403; throw error;
+        }
+        const { passwordActual, nuevaPassword } = req.body;
+        if (!passwordActual || !nuevaPassword) {
+            const error = new Error('Se requiere contraseña actual y nueva.'); error.status = 400; throw error;
+        }
+        await userService.cambiarPassword(userId, passwordActual, nuevaPassword);
+        res.status(200).json({ message: 'Contraseña actualizada exitosamente.' });
+    } catch (error) { next(error); }
+  },
+
+  async handleEliminarUsuario(req, res, next) {
+    try {
+      // Idealmente, un admin no debería poder eliminarse a sí mismo,
+      // o debería haber una confirmación especial.
+      const userId = parseInt(req.params.id, 10);
+      await userService.eliminarUsuario(userId);
+      res.status(200).json({ message: 'Usuario eliminado (lógicamente) exitosamente.' });
+    } catch (error) { next(error); }
+  },
+
+  async handleRestaurarUsuario(req, res, next) {
+    try {
+      const userId = parseInt(req.params.id, 10);
+      const usuarioRestaurado = await userService.restaurarUsuario(userId);
+      res.status(200).json({
+        message: 'Usuario restaurado exitosamente.',
+        data: usuarioRestaurado,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 
   /**
    * Obtiene el perfil del usuario autenticado.

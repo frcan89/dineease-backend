@@ -1,0 +1,36 @@
+type: object
+required:
+  - nombre
+  - email
+  - password # El cliente envía 'password'
+  - id_rol
+properties:
+  nombre:
+    type: string
+    maxLength: 255
+  email:
+    type: string
+    format: email
+    maxLength: 255
+  password: # El cliente envía 'password'
+    type: string
+    format: password
+    description: Contraseña para el nuevo usuario.
+  id_rol:
+    type: integer
+  id_restaurante:
+    type: integer
+    nullable: true
+  # Campos opcionales para el perfil
+  direccion:
+    type: string
+    nullable: true
+  telefono:
+    type: string
+    nullable: true
+  documento_identidad:
+    type: string
+    nullable: true
+  notas:
+    type: string
+    nullable: true

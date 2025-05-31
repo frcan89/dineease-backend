@@ -1,0 +1,30 @@
+type: object
+properties:
+  id_permiso:
+    type: integer
+    example: 1
+    readOnly: true
+  nombre:
+    type: string
+    example: crear_post
+  descripcion:
+    type: string
+    nullable: true
+    example: Permite crear nuevas publicaciones
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true

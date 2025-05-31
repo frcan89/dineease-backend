@@ -1,0 +1,25 @@
+type: object
+required:
+  - nombre
+  - precio_venta
+  - id_restaurante
+properties:
+  nombre:
+    type: string
+  descripcion:
+    type: string
+    nullable: true
+  costo_total:
+    type: number
+    format: float
+    nullable: true
+  precio_venta:
+    type: number
+    format: float
+    minimum: 0
+  estado:
+    type: string
+    default: Activo
+    example: Activo
+  id_restaurante:
+    type: integer

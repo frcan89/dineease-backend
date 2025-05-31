@@ -1,0 +1,40 @@
+type: object
+required:
+  - nombre
+  - email
+  - password_hash # El servicio espera este campo, aunque el cliente envíe 'password'
+  - id_rol
+  # id_restaurante es opcional según DDL
+properties:
+  nombre:
+    type: string
+    maxLength: 255
+  email:
+    type: string
+    format: email
+    maxLength: 255
+  password_hash: # El cliente podría enviar 'password' y el controlador renombrarlo
+    type: string
+    format: password # Sugerencia para UI, no afecta la validación aquí
+    description: Contraseña del usuario. Será hasheada en el backend.
+  id_rol:
+    type: integer
+  id_restaurante:
+    type: integer
+    nullable: true
+  estado: # Opcional al crear, el servicio le dará default
+    type: boolean
+    default: true
+  # Campos para el perfil (opcionales)
+  direccion:
+    type: string
+    nullable: true
+  telefono:
+    type: string
+    nullable: true
+  documento_identidad:
+    type: string
+    nullable: true
+  notas:
+    type: string
+    nullable: true

@@ -1,0 +1,18 @@
+type: object
+required:
+  - id_item_menu
+  - cantidad
+  # id_pedido se tomaría del path o del contexto si se añade a un pedido existente
+properties:
+  id_item_menu:
+    type: integer
+  cantidad:
+    type: integer
+    minimum: 1
+  precio_unitario_momento: # Opcional si el backend lo calcula
+    type: number
+    format: float
+    minimum: 0
+  notas_item:
+    type: string
+    nullable: true
