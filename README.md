@@ -1,4 +1,4 @@
-# DineEase Backend (En Español)
+# DineEase Backend
 
 Este repositorio contiene el código backend para DineEase, un sistema integral de gestión de restaurantes. Proporciona la lógica del lado del servidor, los puntos finales de API y las interacciones con la base de datos necesarias para impulsar una aplicación web o móvil para gestionar las operaciones del restaurante.
 
