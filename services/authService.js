@@ -65,7 +65,7 @@ const authService = {
       const esPasswordValido = await usuario.validarPassword(password);
 
       if (!esPasswordValido) {
-        const error = new Error('Credenciales inválidas.');
+        const error = new Error('Credenciales inválidas.' );
         error.status = 401;
         throw error;
       }

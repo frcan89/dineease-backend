@@ -12,7 +12,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
  */
 
 // Proteger todas las rutas de permisos con autenticación
-router.use(authMiddleware.verificarToken);
+//router.use(authMiddleware.verificarToken);
 
 /**
  * @swagger

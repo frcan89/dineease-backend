@@ -68,7 +68,7 @@ const userService = {
         include: [
           { model: db.Rol, attributes: ['id_rol', 'nombre'] },
           { model: db.PerfilUsuario, as: 'perfil', attributes: { exclude: ['id_usuario', 'eliminado', 'fecha_eliminacion'] } },
-          { model: db.Restaurante, attributes: ['idRestaurante', 'nombre'] } // Ajusta 'idRestaurante' si es 'id_restaurante'
+          { model: db.Restaurante, attributes: ['id_restaurante', 'nombre'] } // Ajusta 'id_restaurante' si es 'id_restaurante'
         ],
         paranoid: !incluirEliminados,
       });
@@ -83,40 +83,86 @@ const userService = {
         where: { email, estado: true }, // Asegurar que esté activo
         include: [
           { model: db.Rol, attributes: ['id_rol', 'nombre'] },
-          { model: db.Restaurante, attributes: ['idRestaurante', 'nombre'] } // Ajusta key
+          { model: db.Restaurante, attributes: ['id_restaurante', 'nombre'] } // Ajusta key
         ]
       });
       return usuario;
     } catch (error) { /* ... manejo de error ... */ throw error; }
   },
 
-  async obtenerTodosLosUsuarios(filtros = {}) {
+async obtenerTodosLosUsuarios(filtros = {}) {
     try {
-      const { limite = 10, pagina = 1, id_restaurante, id_rol, estado, nombre, incluirEliminados = false } = filtros;
-      const offset = (pagina - 1) * limite;
+      const {
+        limite = 10,        // Valor por defecto para el límite
+        pagina = 1,         // Valor por defecto para la página
+        id_restaurante,
+        id_rol,
+        estado,
+        nombre,
+        incluirEliminados = false // Valor por defecto para incluirEliminados
+      } = filtros;
+
+      // Asegurarse de que limite y pagina sean números para el cálculo de offset
+      const numLimite = parseInt(limite, 10);
+      const numPagina = parseInt(pagina, 10);
+      const offset = (numPagina - 1) * numLimite;
+
       const whereClause = {};
 
-      if (id_restaurante) whereClause.id_restaurante = id_restaurante;
-      if (id_rol) whereClause.id_rol = id_rol;
-      if (estado !== undefined) whereClause.estado = estado; // true o false
+      if (id_restaurante !== undefined) whereClause.id_restaurante = parseInt(id_restaurante, 10);
+      if (id_rol !== undefined) whereClause.id_rol = parseInt(id_rol, 10);
+      if (estado !== undefined) {
+        // Convertir a booleano si viene como string 'true' o 'false'
+        if (typeof estado === 'string') {
+          whereClause.estado = estado.toLowerCase() === 'true';
+        } else {
+          whereClause.estado = Boolean(estado);
+        }
+      }
       if (nombre) whereClause.nombre = { [Op.like]: `%${nombre}%` };
-
+      // Si tu DDL para usuario usa `id_restaurante` y `id_rol` como claves foráneas,
+      // los nombres en whereClause deben coincidir. Lo mismo para `estado` si es `estado_usuario`.
 
       const { count, rows } = await db.Usuario.findAndCountAll({
         where: whereClause,
         attributes: { exclude: ['password_hash'] },
         include: [
-            { model: db.Rol, attributes: ['id_rol', 'nombre'] },
-            { model: db.PerfilUsuario, as: 'perfil', attributes: { exclude: ['id_usuario', 'eliminado', 'fecha_eliminacion'] } },
-            { model: db.Restaurante, attributes: ['idRestaurante', 'nombre'] } // Ajusta key
+          {
+            model: db.Rol,
+            attributes: ['id_rol', 'nombre'] // Asegúrate que 'Rol' es el nombre del modelo y 'id_rol' la FK
+          },
+          {
+            model: db.PerfilUsuario,
+            as: 'perfil', // Debe coincidir con el 'as' en la asociación Usuario.hasOne(models.PerfilUsuario, { as: 'perfil' })
+            attributes: { exclude: ['id_usuario', 'eliminado', 'fecha_eliminacion', 'id_perfil_usuario'] } // Excluir campos redundantes o internos
+          },
+          {
+            model: db.Restaurante,
+            attributes: ['id_restaurante', 'nombre'] // Asegúrate que 'Restaurante' es el modelo y 'id_restaurante' la FK
+          }
         ],
-        limit: parseInt(limite, 10),
-        offset: parseInt(offset, 10),
+        limit: numLimite,
+        offset: offset,
         order: [['nombre', 'ASC']],
-        paranoid: !incluirEliminados,
+        paranoid: !incluirEliminados, // Si incluirEliminados es true, paranoid es false (se incluyen)
+                                     // Si incluirEliminados es false, paranoid es true (no se incluyen)
+        distinct: true, // Importante si los 'include' pueden causar duplicados en 'count'
       });
-      return { /* ... resultado paginado ... */ };
-    } catch (error) { /* ... manejo de error ... */ throw error; }
+
+      // CORRECCIÓN AQUÍ: Devolver el objeto completo con la información de paginación
+      return {
+        totalUsuarios: count,
+        usuarios: rows,
+        paginaActual: numPagina,
+        totalPaginas: Math.ceil(count / numLimite),
+      };
+
+    } catch (error) {
+      console.error('Error al obtener todos los usuarios en el servicio:', error);
+      // Si quieres que el error se propague con un status, puedes añadirlo aquí si no lo tiene
+      // if (!error.status) error.status = 500;
+      throw error; // Propagar el error para que el controlador lo maneje
+    }
   },
 
   async actualizarUsuario(userId, datosActualizacion) {

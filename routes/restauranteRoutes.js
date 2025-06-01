@@ -13,7 +13,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 // Aplicar middleware de autenticación a todas las rutas de restaurantes.
 // Descomenta esta línea si todas las rutas deben ser protegidas por defecto.
-router.use(authMiddleware.verificarToken);
+//router.use(authMiddleware.verificarToken);
 
 /**
  * @swagger

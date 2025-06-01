@@ -11,7 +11,7 @@ const userController = {
     try {
       const datosUsuario = req.body;
       // Validación de datos (similar a authController.handleRegistrar)
-      if (!datosUsuario.email || !datosUsuario.password || !datosUsuario.nombre || !datosUsuario.idRol || !datosUsuario.idRestaurante) {
+      if (!datosUsuario.email || !datosUsuario.password_hash || !datosUsuario.nombre || !datosUsuario.id_rol) {
         const error = new Error('Faltan campos obligatorios para crear el usuario.');
         error.status = 400;
         throw error;

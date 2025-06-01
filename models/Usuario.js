@@ -42,7 +42,7 @@ module.exports = (sequelize) => {
     id_restaurante: {
       type: DataTypes.INTEGER,
       allowNull: true, // Como en tu DDL
-      references: { model: 'Restaurante', key: 'idRestaurante' }, // Ajusta key si es id_restaurante
+      references: { model: 'Restaurante', key: 'id_restaurante' }, // Ajusta key si es id_restaurante
     },
     eliminado: {
       type: DataTypes.BOOLEAN,

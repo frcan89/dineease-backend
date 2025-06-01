@@ -12,7 +12,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
  */
 
 // Proteger todas las rutas de roles. Descomenta si no lo has hecho.
-router.use(authMiddleware.verificarToken);
+//router.use(authMiddleware.verificarToken);
 
 /**
  * @swagger

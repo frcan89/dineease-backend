@@ -12,11 +12,11 @@ const authMiddleware = require('../middlewares/authMiddleware');
  */
 
 // Aplicar middleware de autenticación a todas las rutas de usuarios
-router.use(authMiddleware.verificarToken);
+//router.use(authMiddleware.verificarToken);
 
 /**
  * @swagger
- * /api/usuarios/perfil:
+ * /usuarios/perfil:
  *   get:
  *     summary: Obtiene el perfil del usuario autenticado
  *     tags: [Usuarios]
