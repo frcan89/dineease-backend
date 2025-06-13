@@ -1,0 +1,13 @@
+type: object
+properties:
+  idProducto:
+    type: integer
+    description: ID del producto asociado al inventario.
+    example: 1
+  cantidad:
+    type: integer
+    description: Cantidad disponible en inventario.
+    example: 100
+required:
+  - idProducto
+  - cantidad

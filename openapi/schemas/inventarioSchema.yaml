@@ -1,37 +1,28 @@
 type: object
 properties:
-  id_inventario:
+  idInventario:
     type: integer
+    description: ID único del registro de inventario.
+    example: 1
     readOnly: true
-  id_producto:
+  idProducto:
     type: integer
-    readOnly: true # Usualmente se asocia al crear, no se cambia
+    description: ID del producto asociado.
+    example: 1
   cantidad:
-    type: integer # O number si manejas decimales
+    type: integer
+    description: Cantidad disponible en inventario.
     example: 100
-  # fecha_creacion, fecha_actualizacion, eliminado, fecha_eliminacion de la tabla inventario
-  fecha_creacion:
+  ultimaActualizacion: # Corrected to camelCase
     type: string
     format: date-time
+    description: Fecha y hora de la última actualización del registro.
+    example: '2023-01-01T12:00:00Z'
     readOnly: true
-  fecha_actualizacion: # Esta es la importante para el inventario, no la de Sequelize
-    type: string
-    format: date-time
-    readOnly: true # Asumo que la BD la actualiza
-  eliminado:
-    type: boolean
-    example: false
-    readOnly: true
-  fecha_eliminacion:
-    type: string
-    format: date-time
-    nullable: true
-    readOnly: true
-  # Podrías incluir info del producto si es una respuesta de inventario
-  # Producto:
-  #   type: object
-  #   properties:
-  #     nombre:
-  #       type: string
-  #     unidad_medida:
-  #       type: string
+  # Based on `inventarioService.js` using `as: 'producto'` for the association.
+  producto:
+    $ref: './productoSchema.yaml' # Assuming productoSchema.yaml is in the same directory.
+                                 # Adjust if it's a global reference like '#/components/schemas/Producto'.
+
+# Sequelize's default createdAt and updatedAt are disabled in the model definition for Inventario.
+# Only 'ultimaActualizacion' (from 'ultima_actualizacion' in model) is used.
