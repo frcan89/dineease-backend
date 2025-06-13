@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const restauranteRoutes = require('./routes/restauranteRoutes');
 const rolRoutes = require('./routes/rolRoutes');
 const permisoRoutes = require('./routes/permisoRoutes');
+const productoRoutes = require('./routes/productoRoutes');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const path = require('path'); // Necesitarás 'path'
@@ -66,6 +67,7 @@ const swaggerOptions = {
     './routes/restauranteRoutes.js',
     './routes/rolRoutes.js',
     './routes/permisoRoutes.js',
+    './routes/productoRoutes.js',
   ],
 };
 
@@ -82,6 +84,7 @@ app.use('/api/usuarios', userRoutes);
 app.use('/api/restaurantes', restauranteRoutes); 
 app.use('/api/roles', rolRoutes);
 app.use('/api/permisos', permisoRoutes);
+app.use('/api/productos', productoRoutes);
 
 // Otras rutas
 

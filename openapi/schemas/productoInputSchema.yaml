@@ -2,26 +2,36 @@ type: object
 required:
   - nombre
   - unidad_medida
-  - id_restaurante # Asumiendo que siempre se asocia a un restaurante al crear
+  - idRestaurante # Changed from id_restaurante
 properties:
   nombre:
     type: string
     maxLength: 255
+    example: "Tomate Cherry"
   descripcion:
     type: string
     nullable: true
-  unidad_medida:
+    example: "Tomates cherry para ensaladas y guarniciones."
+  unidad_medida: # Ensure this matches model's 'field' if different
     type: string
     maxLength: 50
-  precio_compra:
+    example: "Kg"
+  precio_compra: # Ensure this matches model's 'field' if different
     type: number
-    format: float
+    format: float # DECIMAL(10,2) in model
     nullable: true
     minimum: 0
-  stock_minimo:
+    example: 2.50
+  stock_minimo: # Ensure this matches model's 'field' if different
     type: integer
     nullable: true
     minimum: 0
-  id_restaurante:
+    example: 10
+  idRestaurante: # Changed from id_restaurante
     type: integer
-  # id_usuario_registro se asignaría en el backend
+    example: 1
+  idUsuario: # Added as optional, could be set by backend from auth user
+    type: integer
+    nullable: true
+    description: "ID del usuario que registra el producto. Generalmente se establece automáticamente desde el token de autenticación."
+    example: 123

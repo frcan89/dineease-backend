@@ -1,53 +1,63 @@
 type: object
 properties:
-  id_producto:
+  idProducto: # Changed from id_producto
     type: integer
     readOnly: true
     example: 101
   nombre:
     type: string
-    example: Tomate Fresco
+    example: "Tomate Fresco"
   descripcion:
     type: string
     nullable: true
-    example: Tomates rojos maduros para ensalada.
-  unidad_medida:
+    example: "Tomates rojos maduros para ensalada."
+  unidad_medida: # Ensure this matches model's 'field' if different
     type: string
-    example: "Kg" # O "Unidad", "Litro"
-  precio_compra:
-    type: number # Decimal en BD
-    format: float # O double
+    example: "Kg"
+  precio_compra: # Ensure this matches model's 'field' if different
+    type: number
+    format: float
     nullable: true
     example: 1.50
-  stock_minimo:
+  stock_minimo: # Ensure this matches model's 'field' if different
     type: integer
-    nullable: true # Según DDL era DEFAULT 0, pero puede ser null si no se especifica
+    nullable: true
     example: 5
-  id_usuario_registro: # Usuario que lo registró/modificó
+  idUsuario: # Changed from id_usuario_registro
     type: integer
     nullable: true
     readOnly: true
-  id_restaurante:
+    example: 45
+  idRestaurante: # Changed from id_restaurante
     type: integer
+    readOnly: true # Typically readOnly as it's set on creation
+    example: 1
+  Restaurante: # Added to show associated Restaurante details
+    type: object
     readOnly: true
-  fecha_creacion:
+    properties:
+      idRestaurante:
+        type: integer
+        example: 1
+      nombre:
+        type: string
+        example: "El Gran Sabor"
+  createdAt: # Changed from fecha_creacion
     type: string
     format: date-time
     readOnly: true
-  fecha_actualizacion:
+  updatedAt: # Changed from fecha_actualizacion
     type: string
     format: date-time
     readOnly: true
-  eliminado:
-    type: boolean
-    example: false
-    readOnly: true
+  # The model uses paranoid: true, which creates 'deletedAt'.
+  # If 'fecha_eliminacion' is the actual field name for deletedAt (e.g. via deletedAt: 'fecha_eliminacion' in model definition), use that.
+  # Otherwise, use 'deletedAt'. The service code currently refers to 'fecha_eliminacion'.
+  # Let's assume 'fecha_eliminacion' is explicitly set as the deletedAt field in the model, or there is a mapping.
+  # If not, this should be 'deletedAt'. For now, aligning with service:
   fecha_eliminacion:
     type: string
     format: date-time
     nullable: true
     readOnly: true
-  # Opcional: Incluir el inventario actual
-  # Inventario:
-  #   $ref: '#/components/schemas/Inventario'
-  #   nullable: true
+    example: null

@@ -1,0 +1,21 @@
+type: object
+properties:
+  message:
+    type: string
+    example: "Productos obtenidos exitosamente."
+  data:
+    type: object
+    properties:
+      totalProductos:
+        type: integer
+        example: 100
+      productos:
+        type: array
+        items:
+          $ref: '#/components/schemas/Producto'
+      paginaActual:
+        type: integer
+        example: 1
+      totalPaginas:
+        type: integer
+        example: 10
