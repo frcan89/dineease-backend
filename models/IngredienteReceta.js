@@ -1,39 +1,64 @@
+// models/IngredienteReceta.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   const IngredienteReceta = sequelize.define('IngredienteReceta', {
-    idIngredienteReceta: {
+    id_ingrediente_receta: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      field: 'idIngredienteReceta'
     },
-    idReceta: {
+    id_receta: {
       type: DataTypes.INTEGER,
-      references: { model: 'Receta', key: 'idReceta' },
       allowNull: false,
-      field: 'idReceta'
+      references: { model: 'Receta', key: 'id_receta' },
     },
-    idProducto: {
+    id_producto: {
       type: DataTypes.INTEGER,
-      references: { model: 'Producto', key: 'idProducto' },
       allowNull: false,
-      field: 'idProducto'
+      references: { model: 'Producto', key: 'id_producto' },
     },
-    cantidad: {
-      type: DataTypes.INTEGER, // O DECIMAL
+    cantidad: { // Cantidad del producto necesaria para la receta
+      type: DataTypes.DECIMAL(10, 2), // DDL es decimal
       allowNull: false,
+    },
+    unidad_medida_receta: { // Ej: gramos, ml, unidades.
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    // El DDL también tiene eliminado y fecha_eliminacion para esta tabla
+    eliminado: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    fecha_eliminacion: {
+      type: DataTypes.DATE,
+      allowNull: true,
     }
-    // unidad_medida_receta: { type: DataTypes.STRING(50), allowNull: true }, // Ejemplo campo extra
   }, {
     tableName: 'ingrediente_receta',
-    timestamps: false
+    timestamps: true,
+    createdAt: 'fecha_creacion',
+    updatedAt: 'fecha_actualizacion',
+    // Si quieres eliminación lógica para los ingredientes específicos de una receta
+    // (por ejemplo, si modificas una receta y quitas un ingrediente, en lugar de borrarlo
+    // físicamente de ingrediente_receta, lo marcas como eliminado)
+    paranoid: true,
+    deletedAt: 'fecha_eliminacion',
   });
 
-   IngredienteReceta.associate = (models) => {
-        IngredienteReceta.belongsTo(models.Receta, { foreignKey: 'idReceta' });
-        IngredienteReceta.belongsTo(models.Producto, { foreignKey: 'idProducto' });
-  };
+  // No necesita 'associate' explícita aquí si solo es tabla de unión con atributos
+  // y las asociaciones belongsToMany en Receta y Producto usan `through: models.IngredienteReceta`.
+  // Sequelize entiende las FKs `id_receta` e `id_producto` por convención o por `references`.
+
+  // Hooks si 'ingrediente_receta' usa paranoid
+  IngredienteReceta.addHook('afterDestroy', async (instance, options) => {
+    await instance.update({ eliminado: true }, { hooks: false, transaction: options.transaction });
+  });
+  IngredienteReceta.addHook('afterRestore', async (instance, options) => {
+    await instance.update({ eliminado: false }, { hooks: false, transaction: options.transaction });
+  });
 
   return IngredienteReceta;
 };

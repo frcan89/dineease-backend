@@ -7,6 +7,9 @@ const userRoutes = require('./routes/userRoutes');
 const restauranteRoutes = require('./routes/restauranteRoutes');
 const rolRoutes = require('./routes/rolRoutes');
 const permisoRoutes = require('./routes/permisoRoutes');
+const productoRoutes = require('./routes/productoRoutes');
+const movimientoInventarioRoutes = require('./routes/movimientoInventarioRoutes');
+const recetaRoutes = require('./routes/recetaRoutes');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const path = require('path'); // Necesitarás 'path'
@@ -66,6 +69,9 @@ const swaggerOptions = {
     './routes/restauranteRoutes.js',
     './routes/rolRoutes.js',
     './routes/permisoRoutes.js',
+    './routes/productoRoutes.js',
+    './routes/movimientoInventarioRoutes.js',
+    './routes/recetaRoutes.js',
   ],
 };
 
@@ -82,7 +88,9 @@ app.use('/api/usuarios', userRoutes);
 app.use('/api/restaurantes', restauranteRoutes); 
 app.use('/api/roles', rolRoutes);
 app.use('/api/permisos', permisoRoutes);
-
+app.use('/api/productos', productoRoutes);
+app.use('/api/inventario', movimientoInventarioRoutes); // Ruta para movimientos de inventario
+app.use('/api/recetas', recetaRoutes); // Ruta para recetas
 // Otras rutas
 
 // Middleware de manejo de errores global (debe ir al final)

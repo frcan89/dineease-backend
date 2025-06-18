@@ -1,29 +1,37 @@
 type: object
 properties:
-  idMovimientoInventario: # Asumiendo que tienes un PK autoincremental
+  id_movimiento:
     type: integer
     readOnly: true
   id_producto:
     type: integer
+  id_usuario_responsable:
+    type: integer
+    nullable: true
   tipo_movimiento:
     type: string
-    enum: [ENTRADA, SALIDA, AJUSTE, VENTA] # Ajusta según tu ENUM
-    example: ENTRADA
-  cantidad:
-    type: number # O integer
-    example: 10
-  fecha:
-    type: string
-    format: date-time
-    readOnly: true
-  id_usuario: # Usuario responsable
+    enum: [ENTRADA_COMPRA, ENTRADA_AJUSTE, ENTRADA_DEVOLUCION_CLIENTE, SALIDA_VENTA, SALIDA_CONSUMO_INTERNO, SALIDA_MERMA, SALIDA_AJUSTE, SALIDA_DEVOLUCION_PROVEEDOR]
+  cantidad_movida:
     type: integer
+  cantidad_anterior:
+    type: integer
+  cantidad_nueva:
+    type: integer
+  precio_compra_unitario_movimiento:
+    type: number
+    format: float
     nullable: true
   motivo:
     type: string
     nullable: true
-    example: Compra a proveedor X
-  # Si se relaciona con Pedido
-  # id_pedido:
-  #   type: integer
-  #   nullable: true
+  fecha_movimiento:
+    type: string
+    format: date-time
+  UsuarioResponsable: # Si incluyes info del usuario
+    type: object
+    nullable: true
+    properties:
+      id_usuario:
+        type: integer
+      nombre:
+        type: string

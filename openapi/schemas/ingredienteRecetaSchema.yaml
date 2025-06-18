@@ -1,3 +1,5 @@
+# openapi/schemas/IngredienteRecetaSchema.yaml
+# (Solo si tienes endpoints CRUD específicos para IngredienteReceta)
 type: object
 properties:
   id_ingrediente_receta:
@@ -5,12 +7,34 @@ properties:
     readOnly: true
   id_receta:
     type: integer
+    readOnly: true # Usualmente se establece al crear
   id_producto:
     type: integer
   cantidad:
-    type: number # Decimal en DDL
+    type: number
     format: float
   unidad_medida_receta:
     type: string
     nullable: true
-  # ... fecha_creacion, etc. de la tabla ingrediente_receta ...
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true
+  # Podrías incluir el nombre del producto para conveniencia
+  # Producto:
+  #   type: object
+  #   properties:
+  #     nombre:
+  #       type: string

@@ -1,10 +1,13 @@
+# openapi/schemas/RecetaInputSchema.yaml
 type: object
 required:
   - nombre
-  - id_restaurante
+  # id_restaurante se tomará del usuario autenticado en el backend
 properties:
   nombre:
     type: string
+    maxLength: 255
+    example: "Salsa de Tomate Casera"
   descripcion:
     type: string
     nullable: true
@@ -12,6 +15,7 @@ properties:
     type: integer
     nullable: true
     minimum: 0
+    description: "Tiempo de preparación en minutos"
   instrucciones:
     type: string
     nullable: true
@@ -19,16 +23,17 @@ properties:
     type: integer
     nullable: true
     minimum: 1
+    default: 1
   precio_costo:
     type: number
     format: float
     nullable: true
     minimum: 0
-  id_restaurante:
-    type: integer
-  ingredientes: # Para crear/actualizar ingredientes de la receta
+    description: "Costo estimado de preparación de la receta."
+  ingredientes:
     type: array
-    description: Lista de ingredientes para la receta. Al actualizar, esto reemplazará los ingredientes existentes.
+    description: "Lista de ingredientes para la receta. Al actualizar, esta lista REEMPLAZARÁ los ingredientes existentes de la receta."
+    nullable: true # Permitir enviar una receta sin ingredientes inicialmente, o un array vacío para quitarlos todos
     items:
       type: object
       required:
@@ -37,10 +42,14 @@ properties:
       properties:
         id_producto:
           type: integer
+          description: "ID del producto que es un ingrediente."
         cantidad:
-          type: number # Decimal en DDL
+          type: number # En DDL es DECIMAL(10,2)
           format: float
-          minimum: 0.01
-        unidad_medida_receta: # Opcional, si difiere del producto base
+          description: "Cantidad del producto necesaria."
+          minimum: 0.01 # Un ingrediente debe tener alguna cantidad
+        unidad_medida_receta:
           type: string
+          maxLength: 50
           nullable: true
+          description: "Unidad de medida para este ingrediente en la receta (ej. gramos, ml, unidades). Puede diferir de la unidad base del producto."

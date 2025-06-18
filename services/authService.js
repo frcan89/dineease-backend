@@ -5,6 +5,7 @@ const userService = require('./userService'); // Usaremos userService para obten
 // Deberías guardar tu secreto JWT en variables de entorno
 const JWT_SECRET = process.env.JWT_SECRET || 'tu_secreto_super_secreto_para_desarrollo';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h'; // Tiempo de expiración del token
+console.log("Longitud de JWT_SECRET:", JWT_SECRET.length);
 
 const authService = {
   /**
@@ -72,11 +73,11 @@ const authService = {
 
       // Generar el token JWT
       const payload = {
-        id: usuario.idUsuario,
+        id: usuario.id_usuario,
         email: usuario.email,
-        idRol: usuario.Rol ? usuario.Rol.idRol : null, // Acceder al rol incluido
+        idRol: usuario.Rol ? usuario.Rol.id_rol : null, // Acceder al rol incluido
         nombreRol: usuario.Rol ? usuario.Rol.nombre : null,
-        idRestaurante: usuario.Restaurante ? usuario.Restaurante.idRestaurante : null,
+        idRestaurante: usuario.Restaurante ? usuario.Restaurante.id_restaurante : null,
         nombreRestaurante: usuario.Restaurante ? usuario.Restaurante.nombre : null
         // Puedes añadir más información relevante al payload si es necesario
         // pero mantenlo ligero.

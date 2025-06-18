@@ -4,6 +4,7 @@ const db =require('../models'); // Para verificar si el usuario aún existe (opc
 // Deberías obtener esto de tus variables de entorno
 const JWT_SECRET = process.env.JWT_SECRET || 'tu_secreto_super_secreto_para_desarrollo';
 
+
 const authMiddleware = {
   /**
    * Middleware para verificar el token JWT.
@@ -34,10 +35,9 @@ const authMiddleware = {
       // y si está activo. Esto previene que tokens válidos de usuarios eliminados/desactivados
       // sigan funcionando.
       const usuario = await db.Usuario.findOne({
-        where: { idUsuario: decoded.id, estado: true }, // Asegúrate de que el usuario esté activo
-        attributes: ['idUsuario', 'email', 'idRol', 'idRestaurante', 'estado'] // Solo atributos necesarios
+        where: { id_usuario: decoded.id, estado: true }, // Asegúrate de que el usuario esté activo
+        attributes: ['id_usuario', 'email', 'id_rol', 'id_restaurante', 'estado'] // Solo atributos necesarios
       });
-
       if (!usuario) {
         return res.status(401).json({
           error: { message: 'Acceso no autorizado. Usuario no encontrado o inactivo.' },
@@ -47,14 +47,14 @@ const authMiddleware = {
       // Adjuntar el payload decodificado (y/o la información del usuario de la BD) al objeto request
       // Es común adjuntar solo el payload del token o una versión limpia del usuario.
       req.user = { // Lo que estará disponible en req.user en los controladores
-        id: usuario.idUsuario,
+        id: usuario.id_usuario,
         email: usuario.email,
-        idRol: usuario.idRol,
-        idRestaurante: usuario.idRestaurante
+        idRol: usuario.id_rol, 
+        idRestaurante: usuario.id_restaurante
         // Puedes añadir más campos del 'decoded' o del 'usuario' si son necesarios
         // para la autorización o la lógica de negocio posterior.
       };
-
+      //console.log('Token verificado y usuario encontrado:', req.user);
       next(); // Continuar con el siguiente middleware o controlador
     } catch (error) {
       console.error('Error de autenticación - Token inválido:', error.name, error.message);

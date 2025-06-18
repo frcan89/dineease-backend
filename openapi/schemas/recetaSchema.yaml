@@ -1,46 +1,82 @@
+# openapi/schemas/RecetaSchema.yaml
 type: object
 properties:
-  id_receta: # DDL `id receta`
+  id_receta:
     type: integer
     readOnly: true
+    example: 1
   nombre:
     type: string
+    example: "Limonada Clásica"
   descripcion:
     type: string
     nullable: true
-  tiempo_preparacion: # En minutos
+    example: "Refrescante limonada hecha con limones frescos."
+  tiempo_preparacion:
     type: integer
     nullable: true
+    description: "Tiempo de preparación en minutos"
+    example: 10
   instrucciones:
     type: string
     nullable: true
+    example: "1. Exprimir los limones. 2. Mezclar con agua y azúcar al gusto. 3. Servir con hielo."
   porciones:
     type: integer
     default: 1
-  precio_costo: # Costo de preparación
+    example: 4
+  precio_costo:
     type: number
-    format: float
+    format: float # En OpenAPI, decimal se representa como number con format float o double
     nullable: true
+    description: "Costo estimado de preparación de la receta completa."
+    example: 0.50
   id_restaurante:
     type: integer
+    readOnly: true
+    example: 1
   fecha_creacion:
     type: string
     format: date-time
     readOnly: true
-  # ... fecha_actualizacion, eliminado, fecha_eliminacion ...
-  Ingredientes: # Lista de ingredientes de la receta
-    type: array
+  fecha_actualizacion:
+    type: string
+    format: date-time
     readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true
+  ingredientes: # Array de ingredientes asociados a la receta
+    type: array
+    readOnly: true # Los ingredientes se gestionan a través del endpoint de receta
     items:
       type: object
       properties:
+        # Campos del modelo Producto que queremos mostrar
         id_producto:
           type: integer
-        nombre_producto: # Útil para mostrar
+          example: 25
+        nombre_producto: # Nombre del producto para fácil visualización
           type: string
+          example: "Limón"
+        unidad_medida_producto_base: # Unidad de medida original del producto
+          type: string
+          example: "Unidad"
+        # Campos de la tabla intermedia IngredienteReceta (a través de 'detallesIngrediente')
+        id_ingrediente_receta: # PK de la tabla intermedia, útil si se necesita editar un ingrediente específico
+            type: integer
+            example: 101
         cantidad:
-          type: number # Decimal en DDL
+          type: number # En tu DDL es DECIMAL(10,2)
           format: float
+          example: 4.00
         unidad_medida_receta:
           type: string
           nullable: true
+          example: "Unidades" # Podría ser "gramos", "ml", etc.

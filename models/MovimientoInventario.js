@@ -1,54 +1,75 @@
+// models/MovimientoInventario.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   const MovimientoInventario = sequelize.define('MovimientoInventario', {
-    idMovimientoInventario: { // Si tienes PK
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        field: 'idMovimientoInventario'
+    id_movimiento: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    idProducto: {
+    id_producto: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: 'Producto', key: 'idProducto' },
-      field: 'idProducto'
+      references: { model: 'Producto', key: 'id_producto' },
     },
-    cantidad: { // Cantidad que se movió (+ para entrada, - para salida)
-      type: DataTypes.INTEGER, // O DECIMAL
+    id_usuario_responsable: {
+      type: DataTypes.INTEGER,
+      allowNull: true, // Puede ser null si es un movimiento automático del sistema
+      references: { model: 'Usuario', key: 'id_usuario' },
+    },
+    tipo_movimiento: {
+      type: DataTypes.ENUM( // Ampliamos los tipos
+        'ENTRADA_COMPRA', // Ingreso por compra a proveedor
+        'ENTRADA_AJUSTE', // Ajuste positivo de inventario
+        'ENTRADA_DEVOLUCION_CLIENTE', // Devolución de un cliente
+        'SALIDA_VENTA',
+        'SALIDA_CONSUMO_INTERNO', // Ej: ingredientes usados en preparación que no se descuentan automáticamente de receta
+        'SALIDA_MERMA',
+        'SALIDA_AJUSTE', // Ajuste negativo de inventario
+        'SALIDA_DEVOLUCION_PROVEEDOR'
+      ),
       allowNull: false,
     },
-    tipo_movimiento: { // 'ENTRADA', 'SALIDA', 'AJUSTE', 'VENTA' etc.
-      type: DataTypes.ENUM('ENTRADA', 'SALIDA', 'AJUSTE', 'VENTA'), // Ajusta los valores
+    cantidad_movida: { // Siempre positivo, el tipo_movimiento define si suma o resta
+      type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'tipo_movimiento'
+      validate: {
+        min: 1 // Un movimiento debe ser de al menos 1 unidad
+      }
     },
-    fecha: {
+    cantidad_anterior: { // Stock del producto ANTES de este movimiento
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    cantidad_nueva: { // Stock del producto DESPUÉS de este movimiento
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    precio_compra_unitario_movimiento: { // Precio de compra unitario PARA ESTE MOVIMIENTO específico (si aplica)
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true, // Solo relevante para ENTRADA_COMPRA o similares
+    },
+    motivo: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    fecha_movimiento: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
-    idUsuario: { // Usuario responsable
-      type: DataTypes.INTEGER,
-      allowNull: true, // ¿Siempre hay un responsable?
-      references: { model: 'Usuario', key: 'idUsuario' },
-      field: 'idUsuario'
-    },
-    motivo: { // Descripción breve (Compra a proveedor X, Ajuste por merma, Venta pedido Y)
-      type: DataTypes.STRING(255),
-      allowNull: true,
-    },
-    // Podrías añadir referencia a Pedido si es una salida por venta
-    // idPedido: { type: DataTypes.INTEGER, allowNull: true, references: ... }
+    // Opcional: Referencias a otros documentos
+    // id_documento_referencia: { type: DataTypes.INTEGER, allowNull: true },
+    // tipo_documento_referencia: { type: DataTypes.STRING(50), allowNull: true }, // 'FACTURA_COMPRA', 'NOTA_CREDITO', etc.
   }, {
-    tableName: 'movimiento_inventario', // Nombre exacto
-    timestamps: false // Ya tenemos la columna fecha
+    tableName: 'movimiento_inventario',
+    timestamps: false, // Ya tenemos fecha_movimiento
   });
 
-    MovimientoInventario.associate = (models) => {
-        MovimientoInventario.belongsTo(models.Producto, { foreignKey: 'idProducto' });
-        MovimientoInventario.belongsTo(models.Usuario, { foreignKey: 'idUsuario' });
-        // MovimientoInventario.belongsTo(models.Pedido, { foreignKey: 'idPedido' }); // Si aplica
+  MovimientoInventario.associate = (models) => {
+    MovimientoInventario.belongsTo(models.Producto, { foreignKey: 'id_producto' });
+    MovimientoInventario.belongsTo(models.Usuario, { foreignKey: 'id_usuario_responsable', as: 'usuarioResponsable' });
   };
 
   return MovimientoInventario;
