@@ -1,20 +1,34 @@
 type: object
 properties:
-  id_mesa: # DDL `id mesa`
+  id_mesa:
     type: integer
     readOnly: true
   numero:
-    type: integer # O string si usas nombres
+    type: integer # o string si es alfanumérico
   capacidad:
     type: integer
-    default: 2
   estado:
     type: string
     enum: [Libre, Ocupada, Reservada, 'Fuera de Servicio']
-    default: Libre
   ubicacion:
     type: string
     nullable: true
   id_restaurante:
     type: integer
-  # ... fecha_creacion, etc. ...
+    readOnly: true
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true

@@ -1,14 +1,15 @@
 type: object
 required:
   - numero
-  - id_restaurante
+  # id_restaurante se toma del contexto del usuario
 properties:
   numero:
-    type: integer # O string
+    type: integer # o string
+    description: "Número o identificador único de la mesa dentro del restaurante."
   capacidad:
     type: integer
-    default: 2
     minimum: 1
+    default: 2
   estado:
     type: string
     enum: [Libre, Ocupada, Reservada, 'Fuera de Servicio']
@@ -16,5 +17,4 @@ properties:
   ubicacion:
     type: string
     nullable: true
-  id_restaurante:
-    type: integer
+    maxLength: 255
