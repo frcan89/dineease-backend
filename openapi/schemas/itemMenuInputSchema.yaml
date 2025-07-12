@@ -1,17 +1,18 @@
+# openapi/schemas/ItemMenuInputSchema.yaml
 type: object
 required:
-  - id_menu
   - id_receta
   - precio_item
 properties:
-  id_menu:
-    type: integer
   id_receta:
     type: integer
+    description: "ID de la receta a añadir al menú."
   precio_item:
     type: number
     format: float
+    description: "Precio de venta para este item en este menú."
     minimum: 0
   disponible:
     type: boolean
+    description: "Si el item estará disponible por defecto."
     default: true

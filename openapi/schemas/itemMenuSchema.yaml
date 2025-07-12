@@ -1,29 +1,51 @@
+# openapi/schemas/ItemMenuSchema.yaml
 type: object
 properties:
   id_item_menu:
     type: integer
     readOnly: true
+    example: 101
   id_menu:
     type: integer
+    readOnly: true
+    example: 1
   id_receta:
     type: integer
-  precio_item: # Precio individual del item
+    example: 10
+  precio_item:
     type: number
     format: float
-  disponible: # 1: Disponible, 0: No disponible
+    example: 12.50
+  disponible:
     type: boolean
     example: true
-  # ... fecha_creacion, etc. ...
-  Receta: # Info de la receta asociada
+    description: "Indica si el item está actualmente disponible para ser ordenado."
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true
+  Receta: # Objeto Receta embebido (con campos seleccionados)
     type: object
     readOnly: true
+    nullable: true # Podría ser null si la inclusión falla o no se pide
     properties:
       nombre:
         type: string
+        example: "Sopa de Lentejas"
       descripcion:
         type: string
         nullable: true
-  # Menu: # Info del menú al que pertenece (opcional aquí)
-  #   type: object
-  #   properties:
-  #     nombre: string
+        example: "Sopa tradicional de lentejas con chorizo."

@@ -1,35 +1,20 @@
+# openapi/schemas/ItemPedidoSchema.yaml
 type: object
 properties:
-  id_item_pedido:
-    type: integer
-    readOnly: true
-  id_pedido:
-    type: integer
-  id_item_menu:
-    type: integer
-  cantidad:
-    type: integer
-  precio_unitario_momento: # Precio al momento de la orden
-    type: number
-    format: float
-  notas_item:
-    type: string
-    nullable: true
-  fecha_creacion:
-    type: string
-    format: date-time
-    readOnly: true
-  # ... fecha_actualizacion, eliminado, fecha_eliminacion de la tabla item_pedido ...
-  ItemMenu: # Info del ItemMenu asociado
+  id_item_pedido: { type: integer, readOnly: true }
+  id_pedido: { type: integer }
+  id_item_menu: { type: integer }
+  cantidad: { type: integer }
+  precio_unitario_momento: { type: number, format: float }
+  notas_item: { type: string, nullable: true }
+  # ... timestamps y campos de eliminación ...
+  ItemMenu: # Incluir info del ItemMenu para mostrar detalles del producto
     type: object
-    readOnly: true
+    nullable: true
     properties:
-      # id_item_menu ya está arriba
-      precio_item: # Precio actual del item_menu (puede ser diferente al precio_unitario_momento)
-        type: number
-        format: float
+      precio_item: { type: number, format: float }
       Receta:
         type: object
+        nullable: true
         properties:
-          nombre:
-            type: string
+          nombre: { type: string }

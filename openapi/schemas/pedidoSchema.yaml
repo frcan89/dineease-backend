@@ -1,59 +1,33 @@
+# openapi/schemas/PedidoSchema.yaml
 type: object
 properties:
-  id_pedido:
-    type: integer
-    readOnly: true
-  id_mesa:
-    type: integer
-    nullable: true # Para pedidos para llevar/delivery
-  id_usuario_empleado: # Empleado que tomó/gestionó
-    type: integer
-  id_cliente: # Cliente que realizó (FK a usuario.id_usuario o null)
-    type: integer
-    nullable: true
-  estado:
-    type: string
-    example: En Preparación # Ej: Pendiente, En Preparación, Listo para Servir, Servido, Pagado, Cancelado
-  subtotal:
-    type: number
-    format: float
-    default: 0.00
-  id_restaurante:
-    type: integer
-  fecha_creacion:
-    type: string
-    format: date-time
-    readOnly: true
-  fecha_actualizacion:
-    type: string
-    format: date-time
-    readOnly: true
-  eliminado:
-    type: boolean
-    example: false
-    readOnly: true
-  fecha_eliminacion:
-    type: string
-    format: date-time
-    nullable: true
-    readOnly: true
-  Mesa: # Opcional, si se incluye
+  id_pedido: { type: integer, readOnly: true }
+  id_mesa: { type: integer, nullable: true }
+  id_usuario_empleado: { type: integer }
+  id_cliente: { type: integer, nullable: true }
+  estado: { type: string, example: "Pendiente" }
+  subtotal: { type: number, format: float }
+  id_restaurante: { type: integer }
+  # ... timestamps y campos de eliminación ...
+  empleado:
     type: object
     nullable: true
     properties:
-      numero:
-        type: integer # o string
-      ubicacion:
-        type: string
-        nullable: true
-  UsuarioEmpleado: # Opcional, si se incluye
+      id_usuario: { type: integer }
+      nombre: { type: string }
+  cliente:
     type: object
     nullable: true
     properties:
-      nombre:
-        type: string
-  ItemsPedido: # Lista de items del pedido
+      id_usuario: { type: integer }
+      nombre: { type: string }
+  Mesa:
+    type: object
+    nullable: true
+    properties:
+      id_mesa: { type: integer }
+      numero: { type: integer } # o string
+  items:
     type: array
-    readOnly: true
     items:
-      $ref: '#/components/schemas/ItemPedidoResponse' # Un schema específico para la respuesta de ItemPedido
+      $ref: '#/components/schemas/ItemPedido'

@@ -1,0 +1,12 @@
+# openapi/schemas/ItemMenuUpdateSchema.yaml
+type: object
+description: "Campos actualizables para un item de menú. Se debe enviar al menos uno."
+properties:
+  precio_item:
+    type: number
+    format: float
+    description: "Nuevo precio de venta de este item individual."
+    minimum: 0
+  disponible:
+    type: boolean
+    description: "True para marcar como disponible, False para no disponible."

@@ -11,6 +11,8 @@ const productoRoutes = require('./routes/productoRoutes');
 const movimientoInventarioRoutes = require('./routes/movimientoInventarioRoutes');
 const recetaRoutes = require('./routes/recetaRoutes');
 const mesaRoutes = require('./routes/mesaRoutes');
+const menuRoutes = require('./routes/menuRoutes');
+const pedidoRoutes = require('./routes/pedidoRoutes');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const path = require('path'); // Necesitarás 'path'
@@ -73,7 +75,9 @@ const swaggerOptions = {
     './routes/productoRoutes.js',
     './routes/movimientoInventarioRoutes.js',
     './routes/recetaRoutes.js',
-    './routes/mesaRoutes.js', // Asegúrate de incluir la ruta de las mesas
+    './routes/mesaRoutes.js',
+    './routes/menuRoutes.js',
+    './routes/pedidoRoutes.js', // Asegúrate de incluir las rutas de pedidos
   ],
 };
 
@@ -94,6 +98,8 @@ app.use('/api/productos', productoRoutes);
 app.use('/api/inventario', movimientoInventarioRoutes); // Ruta para movimientos de inventario
 app.use('/api/recetas', recetaRoutes); // Ruta para recetas
 app.use('/api/mesas', mesaRoutes); // Ruta para mesas
+app.use('/api/menus', menuRoutes); // Ruta para menús
+app.use('/api/pedidos', pedidoRoutes); // Ruta para pedidos
 // Otras rutas
 
 // Middleware de manejo de errores global (debe ir al final)

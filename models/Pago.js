@@ -1,55 +1,64 @@
+// models/Pago.js
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   const Pago = sequelize.define('Pago', {
-    idPago: {
+    id_pago: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      field: 'idPago'
     },
-    idPedido: {
+    id_pedido: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      // unique: true, // Un pedido usualmente tiene un solo pago final
-      references: { model: 'Pedido', key: 'idPedido' },
-      field: 'idPedido'
+      references: { model: 'Pedido', key: 'id_pedido' },
     },
-    monto: { // Monto total pagado (puede incluir propina)
+    monto: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    cambio: { // Cambio devuelto al cliente
+    cambio: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: true, // Puede ser 0 o nulo
-      defaultValue: 0.00
+      allowNull: true,
+      defaultValue: 0.00,
     },
-    metodo_pago: { // 'EFECTIVO', 'TARJETA_CREDITO', 'TARJETA_DEBITO', 'TRANSFERENCIA', 'APP_PAGO'
-      type: DataTypes.STRING(50), // O ENUM
+    metodo_pago: {
+      type: DataTypes.STRING(50),
       allowNull: false,
-      field: 'metodo_pago'
     },
-    estado: { // 'PENDIENTE', 'COMPLETADO', 'FALLIDO', 'REEMBOLSADO'
-      type: DataTypes.STRING(50), // O ENUM
+    estado: {
+      type: DataTypes.STRING(50),
       allowNull: false,
-      defaultValue: 'COMPLETADO'
+      defaultValue: 'Pendiente',
     },
     fecha_pago: {
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-      field: 'fecha_pago'
+    },
+    eliminado: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    fecha_eliminacion: {
+      type: DataTypes.DATE,
+      allowNull: true,
     }
   }, {
     tableName: 'pago',
-    timestamps: false // Ya tenemos fecha_pago
+    timestamps: true,
+    createdAt: 'fecha_creacion',
+    updatedAt: 'fecha_actualizacion',
+    paranoid: true,
+    deletedAt: 'fecha_eliminacion',
   });
 
   Pago.associate = (models) => {
-    Pago.belongsTo(models.Pedido, { foreignKey: 'idPedido' });
-    // Un Pago tiene una Factura asociada
-    Pago.hasOne(models.Factura, { foreignKey: 'idPago' });
+    Pago.belongsTo(models.Pedido, { foreignKey: 'id_pedido' });
+    Pago.hasOne(models.Factura, { foreignKey: 'id_pago' }); // Si tienes un modelo Factura
   };
+
+  // ... (Hooks para 'eliminado' si son necesarios) ...
 
   return Pago;
 };

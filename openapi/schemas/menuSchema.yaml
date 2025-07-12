@@ -1,28 +1,55 @@
+# openapi/schemas/MenuSchema.yaml
 type: object
 properties:
   id_menu:
     type: integer
     readOnly: true
+    example: 1
   nombre:
     type: string
+    example: "Menú del Día"
   descripcion:
     type: string
     nullable: true
-  costo_total: # Del menú completo, si aplica
+    example: "Nuestro menú especial para el almuerzo de hoy."
+  costo_total:
     type: number
     format: float
     nullable: true
-  precio_venta: # Precio del menú completo
+    description: "Costo de producción del menú completo si aplica (informativo)."
+    example: 15.50
+  precio_venta:
     type: number
     format: float
+    description: "Precio de venta del menú completo (si se vende como un combo)."
+    example: 25.00
   estado:
     type: string
-    example: Activo
+    example: "Activo"
+    description: "Ej: Activo, Inactivo, Promoción"
   id_restaurante:
     type: integer
-  # ... fecha_creacion, etc. ...
-  ItemsMenu: # Lista de items del menú
+    readOnly: true
+    example: 1
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    example: false
+    readOnly: true
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true
+  items: # Array de los items de menú asociados
     type: array
     readOnly: true
     items:
-      $ref: '#/components/schemas/ItemMenu'
+      $ref: '#/components/schemas/ItemMenu' # Referencia al schema ItemMenu

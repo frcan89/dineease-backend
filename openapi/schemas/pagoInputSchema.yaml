@@ -1,23 +1,14 @@
+# openapi/schemas/PagoInputSchema.yaml
 type: object
 required:
-  - id_pedido
   - monto
   - metodo_pago
 properties:
-  id_pedido:
-    type: integer
   monto:
     type: number
     format: float
-    minimum: 0.01 # Un pago debe ser por algo
-  cambio: # El backend podría calcularlo
-    type: number
-    format: float
-    nullable: true
+    description: "Monto total recibido del cliente. Debe ser >= al subtotal del pedido."
     minimum: 0
   metodo_pago:
     type: string
-    example: Tarjeta Debito
-  estado: # Opcional, el backend podría asignarlo
-    type: string
-    example: Completado
+    example: "Tarjeta Credito"

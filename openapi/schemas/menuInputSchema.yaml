@@ -1,11 +1,13 @@
+# openapi/schemas/MenuInputSchema.yaml
 type: object
 required:
   - nombre
   - precio_venta
-  - id_restaurante
 properties:
   nombre:
     type: string
+    maxLength: 255
+    example: "Menú de Noche"
   descripcion:
     type: string
     nullable: true
@@ -13,13 +15,12 @@ properties:
     type: number
     format: float
     nullable: true
+    minimum: 0
   precio_venta:
     type: number
     format: float
     minimum: 0
   estado:
     type: string
-    default: Activo
-    example: Activo
-  id_restaurante:
-    type: integer
+    default: "Activo"
+    example: "Activo"
