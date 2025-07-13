@@ -4,9 +4,10 @@ const inventarioService = require('../services/inventarioService');
 const movimientoInventarioController = {
   async handleRegistrarMovimiento(req, res, next) {
     try {
+      console.log(req.user)
       const datosMovimiento = req.body;
       const idUsuarioResponsable = req.user.id; // Del middleware de autenticación
-      const idRestauranteContexto = req.user.id_restaurante;
+      const idRestauranteContexto = req.user.idRestaurante;
 
       if (!idRestauranteContexto) { // Asumiendo que un usuario no superadmin siempre tiene restaurante
           const error = new Error('Usuario no asociado a un restaurante para realizar movimientos de inventario.');
@@ -75,7 +76,7 @@ const movimientoInventarioController = {
   async handleObtenerStockActual(req, res, next) {
     try {
         const idProducto = parseInt(req.params.id_producto, 10);
-        const idRestauranteContexto = req.user.id_restaurante;
+        const idRestauranteContexto = req.user.idRestaurante;
         console.log(`ID Producto: ${idProducto}, ID Restaurante Contexto: ${idRestauranteContexto}`);
         if (isNaN(idProducto)) {
             const error = new Error("ID de producto inválido."); error.status = 400; throw error;
