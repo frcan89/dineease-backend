@@ -75,9 +75,10 @@ const productoController = {
 
   async handleActualizarProducto(req, res, next) {
     try {
+      console.log('Actualizando producto con datos:', req.user);
       const idProducto = parseInt(req.params.id, 10);
       const idUsuarioLogueado = req.user.id;
-      const idRestauranteContexto = req.user.id_restaurante; // Un usuario solo puede actualizar productos de su restaurante
+      const idRestauranteContexto = req.user.idRestaurante; // Un usuario solo puede actualizar productos de su restaurante
        if (!idRestauranteContexto /* && !esSuperAdmin(req.user.id_rol) */) { // Superadmin necesitaría pasar id_restaurante_contexto en body o query
             const error = new Error('Operación no permitida o restaurante no especificado.');
             error.status = 403; throw error;
@@ -91,7 +92,7 @@ const productoController = {
   async handleEliminarProducto(req, res, next) {
     try {
       const idProducto = parseInt(req.params.id, 10);
-      const idRestauranteContexto = req.user.id_restaurante;
+      const idRestauranteContexto = req.user.idRestaurante;
       if (!idRestauranteContexto /* && !esSuperAdmin(req.user.id_rol) */) {
             const error = new Error('Operación no permitida.');
             error.status = 403; throw error;
@@ -104,7 +105,7 @@ const productoController = {
   async handleRestaurarProducto(req, res, next) {
     try {
       const idProducto = parseInt(req.params.id, 10);
-      const idRestauranteContexto = req.user.id_restaurante;
+      const idRestauranteContexto = req.user.idRestaurante;
        if (!idRestauranteContexto /* && !esSuperAdmin(req.user.id_rol) */) {
             const error = new Error('Operación no permitida.');
             error.status = 403; throw error;

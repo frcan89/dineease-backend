@@ -1,31 +1,32 @@
+# openapi/schemas/PagoSchema.yaml
 type: object
 properties:
   id_pago:
     type: integer
     readOnly: true
+    example: 1
   id_pedido:
     type: integer
+    readOnly: true
+    example: 16
   monto:
     type: number
     format: float
+    description: "Monto total recibido del cliente."
+    example: 70.00
   cambio:
     type: number
     format: float
-    default: 0.00
+    description: "Cambio devuelto al cliente."
+    example: 10.00
   metodo_pago:
     type: string
-    example: Efectivo # Ej: Efectivo, Tarjeta Credito, Transferencia
+    example: "Efectivo"
   estado:
     type: string
-    example: Completado # Ej: Pendiente, Completado, Fallido, Reembolsado
+    example: "Completado"
   fecha_pago:
     type: string
     format: date-time
-  # ... fecha_creacion, etc. de la tabla pago ...
-  Pedido: # Opcional, info del pedido asociado
-    type: object
-    nullable: true
-    properties:
-      subtotal:
-        type: number
-        format: float
+    readOnly: true
+  # ... otros campos de la tabla pago ...

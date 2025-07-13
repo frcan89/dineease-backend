@@ -2,28 +2,39 @@
 type: object
 required:
   - items
-  # id_usuario_empleado y id_restaurante se toman del token
+  # id_usuario_empleado y id_restaurante se toman del token del usuario autenticado
 properties:
   id_mesa:
     type: integer
     nullable: true
-    description: "ID de la mesa. Omitir para pedidos para llevar/delivery."
+    description: "ID de la mesa donde se realiza el pedido. Omitir si es para llevar."
+    example: 1
   id_cliente:
     type: integer
     nullable: true
-    description: "ID del usuario cliente si está registrado."
+    description: "ID del usuario cliente si está registrado en el sistema."
+    example: 5
   items:
     type: array
+    description: "Lista de menús que se van a pedir."
     minItems: 1
     items:
       type: object
-      required: [ id_item_menu, cantidad ]
+      required:
+        - id_menu
+        - cantidad
       properties:
-        id_item_menu:
+        id_menu:
           type: integer
+          description: "ID del menú que se está pidiendo."
+          example: 1
         cantidad:
           type: integer
+          description: "Cantidad de este menú que se pide."
           minimum: 1
+          example: 2
         notas_item:
           type: string
           nullable: true
+          description: "Notas específicas para este menú en el pedido (ej. 'sin cebolla en la sopa')."
+          example: "Uno de los menús bajo en sal."

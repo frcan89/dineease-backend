@@ -7,8 +7,10 @@ properties:
   monto:
     type: number
     format: float
-    description: "Monto total recibido del cliente. Debe ser >= al subtotal del pedido."
+    description: "Monto total recibido del cliente. Debe ser mayor o igual al subtotal del pedido."
     minimum: 0
+    example: 60.00
   metodo_pago:
     type: string
-    example: "Tarjeta Credito"
+    enum: [Efectivo, Tarjeta Credito, Tarjeta Debito, Transferencia, Otro]
+    example: "Efectivo"

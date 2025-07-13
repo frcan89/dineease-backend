@@ -1,33 +1,74 @@
 # openapi/schemas/PedidoSchema.yaml
 type: object
 properties:
-  id_pedido: { type: integer, readOnly: true }
-  id_mesa: { type: integer, nullable: true }
-  id_usuario_empleado: { type: integer }
-  id_cliente: { type: integer, nullable: true }
-  estado: { type: string, example: "Pendiente" }
-  subtotal: { type: number, format: float }
-  id_restaurante: { type: integer }
-  # ... timestamps y campos de eliminación ...
-  empleado:
+  id_pedido:
+    type: integer
+    readOnly: true
+    example: 16
+  id_mesa:
+    type: integer
+    nullable: true
+    example: 1
+  id_usuario_empleado:
+    type: integer
+    readOnly: true
+    example: 4
+  id_cliente:
+    type: integer
+    nullable: true
+    example: 5
+  estado:
+    type: string
+    enum: [Pendiente, En Preparación, Listo para Servir, Servido, Pagado, Cancelado]
+    example: "Pendiente"
+  subtotal:
+    type: number
+    format: float
+    readOnly: true
+    example: 60.00
+  id_restaurante:
+    type: integer
+    readOnly: true
+    example: 1
+  fecha_creacion:
+    type: string
+    format: date-time
+    readOnly: true
+  fecha_actualizacion:
+    type: string
+    format: date-time
+    readOnly: true
+  eliminado:
+    type: boolean
+    readOnly: true
+    example: false
+  fecha_eliminacion:
+    type: string
+    format: date-time
+    nullable: true
+    readOnly: true
+  empleado: # Objeto anidado del empleado
     type: object
     nullable: true
+    readOnly: true
     properties:
-      id_usuario: { type: integer }
-      nombre: { type: string }
-  cliente:
+      id_usuario:
+        type: integer
+      nombre:
+        type: string
+        example: "Carlos Mesero"
+  Mesa: # Objeto anidado de la mesa
     type: object
     nullable: true
+    readOnly: true
     properties:
-      id_usuario: { type: integer }
-      nombre: { type: string }
-  Mesa:
-    type: object
-    nullable: true
-    properties:
-      id_mesa: { type: integer }
-      numero: { type: integer } # o string
-  items:
+      id_mesa:
+        type: integer
+      numero:
+        type: integer
+        example: 5
+  items: # Array de los menús pedidos (a través de ItemPedido)
     type: array
+    readOnly: true
     items:
       $ref: '#/components/schemas/ItemPedido'
