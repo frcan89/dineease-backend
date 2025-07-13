@@ -69,6 +69,7 @@ const recetaService = {
   async obtenerTodasLasRecetas(filtros = {}, id_restaurante_contexto) {
     const { limite = 10, pagina = 1, nombre, incluirEliminados = false } = filtros;
     const offset = (pagina - 1) * limite;
+    console.log('restaurante contexto:', id_restaurante_contexto);
     const whereClause = { id_restaurante: id_restaurante_contexto }; // Siempre filtrar por restaurante
     if (nombre) whereClause.nombre = { [Op.like]: `%${nombre}%` };
 
@@ -95,7 +96,20 @@ const recetaService = {
       paranoid: !incluirEliminados,
       distinct: true, // Importante con belongsToMany para el count
     });
-    return { /* ... resultado paginado ... */ };
+    return {
+      total: count,
+      recetas: rows.map(receta => ({
+        ...receta.get({ plain: true }),
+        ingredientes: receta.ingredientes.map(ing => ({
+          ...ing.detallesIngrediente.get({ plain: true }),
+          id_producto: ing.id_producto,
+          nombre: ing.nombre,
+          unidad_medida: ing.unidad_medida
+        }))
+      })),
+      paginaActual: pagina,
+      totalPaginas: Math.ceil(count / limite),
+    };
   },
 
   async obtenerRecetaPorId(idReceta, id_restaurante_contexto, incluirEliminados = false) {
